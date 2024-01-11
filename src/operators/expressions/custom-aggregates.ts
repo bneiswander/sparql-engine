@@ -24,25 +24,24 @@ SOFTWARE.
 
 'use strict'
 
-import { Term } from 'rdf-js'
-import { rdf } from '../../utils'
 import { intersectionWith, isUndefined, sum, zip } from 'lodash'
+import { rdf } from '../../utils.js'
 
-type TermRows = { [key: string]: Term[] }
+type TermRows = { [key: string]: rdf.Term[] }
 
-function precision (expected: Term[], predicted: Term[]): number {
+function precision(expected: rdf.Term[], predicted: rdf.Term[]): number {
   const intersection = intersectionWith(expected, predicted, (x, y) => rdf.termEquals(x, y))
   return intersection.length / predicted.length
 }
 
-function recall (expected: Term[], predicted: Term[]): number {
+function recall(expected: rdf.Term[], predicted: rdf.Term[]): number {
   const intersection = intersectionWith(expected, predicted, (x, y) => rdf.termEquals(x, y))
   return intersection.length / expected.length
 }
 
 /**
  * Implementation of Non standard SPARQL aggregations offered by the framework
- * All arguments are pre-compiled from string to RDF.js terms
+ * All arguments are pre-compiled from string to rdf.js terms
  * @author Thomas Minier
  */
 export default {
@@ -52,7 +51,7 @@ export default {
 
   // Accuracy: computes percentage of times two variables have different values
   // In regular SPARQL, equivalent to sum(if(?a = ?b, 1, 0)) / count(*)
-  'https://callidon.github.io/sparql-engine/aggregates#accuracy': function (a: string, b: string, rows: TermRows): Term {
+  'https://callidon.github.io/sparql-engine/aggregates#accuracy': function (a: string, b: string, rows: TermRows): rdf.Term {
     const tests = zip(rows[a], rows[b]).map(v => {
       if (isUndefined(v[0]) || isUndefined(v[1])) {
         return 0
@@ -65,11 +64,11 @@ export default {
   // Geometric mean (https://en.wikipedia.org/wiki/Geometric_mean)
   // "The geometric mean is a mean or average, which indicates the central tendency or typical value of a set of
   // numbers by using the product of their values (as opposed to the arithmetic mean which uses their sum)."
-  'https://callidon.github.io/sparql-engine/aggregates#gmean': function (variable: string, rows: TermRows): Term {
+  'https://callidon.github.io/sparql-engine/aggregates#gmean': function (variable: string, rows: TermRows): rdf.Term {
     if (variable in rows) {
       const count = rows[variable].length
       const product = rows[variable].map(term => {
-        if (rdf.termIsLiteral(term) && rdf.literalIsNumeric(term)) {
+        if (rdf.isLiteral(term) && rdf.literalIsNumeric(term)) {
           return rdf.asJS(term.value, term.datatype.value)
         }
         return 1
@@ -82,13 +81,13 @@ export default {
   // Mean Square error: computes the average of the squares of the errors, that is
   // the average squared difference between the estimated values and the actual value.
   // In regular SPARQL, equivalent to sum(?a - ?b) * (?a - ?b / count(*))
-  'https://callidon.github.io/sparql-engine/aggregates#mse': function (a: string, b: string, rows: TermRows): Term {
+  'https://callidon.github.io/sparql-engine/aggregates#mse': function (a: string, b: string, rows: TermRows): rdf.Term {
     const values = zip(rows[a], rows[b]).map(v => {
       const expected = v[0]
       const predicted = v[1]
       if (isUndefined(predicted) || isUndefined(expected)) {
         return 0
-      } else if (rdf.termIsLiteral(predicted) && rdf.termIsLiteral(expected) && rdf.literalIsNumeric(predicted) && rdf.literalIsNumeric(expected)) {
+      } else if (rdf.isLiteral(predicted) && rdf.isLiteral(expected) && rdf.literalIsNumeric(predicted) && rdf.literalIsNumeric(expected)) {
         return Math.pow(rdf.asJS(expected.value, expected.datatype.value) - rdf.asJS(predicted.value, predicted.datatype.value), 2)
       }
       throw new SyntaxError(`SPARQL aggregation error: cannot compute mean square error between RDF Terms ${expected} and ${predicted}, as they are not numbers`)
@@ -98,13 +97,13 @@ export default {
 
   // Root mean Square error: computes the root of the average of the squares of the errors
   // In regular SPARQL, equivalent to sqrt(sum(?a - ?b) * (?a - ?b / count(*)))
-  'https://callidon.github.io/sparql-engine/aggregates#rmse': function (a: string, b: string, rows: TermRows): Term {
+  'https://callidon.github.io/sparql-engine/aggregates#rmse': function (a: string, b: string, rows: TermRows): rdf.Term {
     const values = zip(rows[a], rows[b]).map(v => {
       const expected = v[0]
       const predicted = v[1]
       if (isUndefined(predicted) || isUndefined(expected)) {
         return 0
-      } else if (rdf.termIsLiteral(predicted) && rdf.termIsLiteral(expected) && rdf.literalIsNumeric(predicted) && rdf.literalIsNumeric(expected)) {
+      } else if (rdf.isLiteral(predicted) && rdf.isLiteral(expected) && rdf.literalIsNumeric(predicted) && rdf.literalIsNumeric(expected)) {
         return Math.pow(rdf.asJS(expected.value, expected.datatype.value) - rdf.asJS(predicted.value, predicted.datatype.value), 2)
       }
       throw new SyntaxError(`SPARQL aggregation error: cannot compute mean square error between RDF Terms ${expected} and ${predicted}, as they are not numbers`)
@@ -113,7 +112,7 @@ export default {
   },
 
   // Precision: the fraction of retrieved values that are relevant to the query
-  'https://callidon.github.io/sparql-engine/aggregates#precision': function (a: string, b: string, rows: TermRows): Term {
+  'https://callidon.github.io/sparql-engine/aggregates#precision': function (a: string, b: string, rows: TermRows): rdf.Term {
     if (!(a in rows) || !(b in rows)) {
       return rdf.createFloat(0)
     }
@@ -121,7 +120,7 @@ export default {
   },
 
   // Recall: the fraction of retrieved values that are successfully retrived
-  'https://callidon.github.io/sparql-engine/aggregates#recall': function (a: string, b: string, rows: TermRows): Term {
+  'https://callidon.github.io/sparql-engine/aggregates#recall': function (a: string, b: string, rows: TermRows): rdf.Term {
     if (!(a in rows) || !(b in rows)) {
       return rdf.createFloat(0)
     }
@@ -129,7 +128,7 @@ export default {
   },
 
   // F1 score: The F1 score can be interpreted as a weighted average of the precision and recall, where an F1 score reaches its best value at 1 and worst score at 0.
-  'https://callidon.github.io/sparql-engine/aggregates#f1': function (a: string, b: string, rows: TermRows): Term {
+  'https://callidon.github.io/sparql-engine/aggregates#f1': function (a: string, b: string, rows: TermRows): rdf.Term {
     if (!(a in rows) || !(b in rows)) {
       return rdf.createFloat(0)
     }

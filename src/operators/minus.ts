@@ -24,10 +24,10 @@ SOFTWARE.
 
 'use strict'
 
-import { Pipeline } from '../engine/pipeline/pipeline'
-import { PipelineStage } from '../engine/pipeline/pipeline-engine'
 import { concat, intersection } from 'lodash'
-import { Bindings } from '../rdf/bindings'
+import { PipelineStage } from '../engine/pipeline/pipeline-engine.js'
+import { Pipeline } from '../engine/pipeline/pipeline.js'
+import { Bindings } from '../rdf/bindings.js'
 
 /**
  * Evaluates a SPARQL MINUS clause
@@ -37,7 +37,7 @@ import { Bindings } from '../rdf/bindings'
  * @param rightSource - Right input {@link PipelineStage}
  * @return A {@link PipelineStage} which evaluate the MINUS operation
  */
-export default function minus (leftSource: PipelineStage<Bindings>, rightSource: PipelineStage<Bindings>) {
+export default function minus(leftSource: PipelineStage<Bindings>, rightSource: PipelineStage<Bindings>) {
   // first materialize the right source in a buffer, then apply difference on the left source
   const engine = Pipeline.getInstance()
   let op = engine.reduce(rightSource, (acc: Bindings[], b: Bindings) => concat(acc, b), [])
@@ -49,7 +49,7 @@ export default function minus (leftSource: PipelineStage<Bindings>, rightSource:
       const isCompatible = buffer.some((b: Bindings) => {
         const rightKeys = Array.from(b.variables())
         const commonKeys = intersection(leftKeys, rightKeys)
-        return commonKeys.every((k: string) => b.get(k) === bindings.get(k))
+        return commonKeys.every((k) => b.get(k) === bindings.get(k))
       })
       // only output non-compatible bindings
       return !isCompatible

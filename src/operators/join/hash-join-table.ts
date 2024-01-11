@@ -22,15 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import { Bindings } from '../../rdf/bindings'
+import { Bindings } from '../../rdf/bindings.js'
+import { rdf, sparql } from '../../utils.js'
 
 /**
  * A HashJoinTable is used by a Hash-based join to save set of bindings corresponding to a joinKey.
  * All bindings corresponding to the save value of the joinKey are aggregated in a list.
  */
 export default class HashJoinTable {
-  private readonly _content: Map<string, Bindings[]>
-  constructor () {
+  private readonly _content: Map<rdf.Variable | sparql.BoundedTripleValue, Bindings[]>
+  constructor() {
     this._content = new Map()
   }
 
@@ -39,7 +40,7 @@ export default class HashJoinTable {
    * @param key - Key used to save the bindings
    * @param bindings - Bindings to save
    */
-  put (key: string, bindings: Bindings): void {
+  put(key: rdf.Variable | sparql.BoundedTripleValue, bindings: Bindings): void {
     if (!this._content.has(key)) {
       this._content.set(key, [])
     }
@@ -54,7 +55,7 @@ export default class HashJoinTable {
    * @param  bindings - Bindings to join with
    * @return Join results, or an empty list if there is none.
    */
-  join (key: string, bindings: Bindings): Bindings[] {
+  join(key: rdf.Variable | sparql.BoundedTripleValue, bindings: Bindings): Bindings[] {
     if (!this._content.has(key)) {
       return []
     }

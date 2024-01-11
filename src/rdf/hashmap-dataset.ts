@@ -24,8 +24,9 @@ SOFTWARE.
 
 'use strict'
 
-import Graph from './graph'
-import Dataset from './dataset'
+import { rdf } from '../utils.js'
+import Dataset from './dataset.js'
+import Graph from './graph.js'
 
 /**
  * A simple Dataset backed by a HashMap.
@@ -34,38 +35,38 @@ import Dataset from './dataset'
  */
 export default class HashMapDataset extends Dataset {
   private _defaultGraph: Graph
-  private readonly _namedGraphs: Map<string, Graph>
+  private readonly _namedGraphs: Map<rdf.NamedNode, Graph>
   /**
    * Constructor
    * @param defaultGraphIRI - IRI of the Default Graph
    * @param defaultGraph     - Default Graph
    */
-  constructor (defaultGraphIRI: string, defaultGraph: Graph) {
+  constructor(defaultGraphIRI: rdf.NamedNode, defaultGraph: Graph) {
     super()
     defaultGraph.iri = defaultGraphIRI
     this._defaultGraph = defaultGraph
     this._namedGraphs = new Map()
   }
 
-  get iris (): string[] {
+  get iris(): rdf.NamedNode[] {
     return Array.from(this._namedGraphs.keys())
   }
 
-  setDefaultGraph (g: Graph): void {
+  setDefaultGraph(g: Graph): void {
     this._defaultGraph = g
   }
 
-  getDefaultGraph (): Graph {
+  getDefaultGraph(): Graph {
     return this._defaultGraph
   }
 
-  addNamedGraph (iri: string, g: Graph): void {
+  addNamedGraph(iri: rdf.NamedNode, g: Graph): void {
     g.iri = iri
     this._namedGraphs.set(iri, g)
   }
 
-  getNamedGraph (iri: string): Graph {
-    if (iri === this._defaultGraph.iri) {
+  getNamedGraph(iri: rdf.NamedNode): Graph {
+    if (this._defaultGraph.iri.equals(iri)) {
       return this.getDefaultGraph()
     } else if (!this._namedGraphs.has(iri)) {
       throw new Error(`Unknown graph with iri ${iri}`)
@@ -73,11 +74,11 @@ export default class HashMapDataset extends Dataset {
     return this._namedGraphs.get(iri)!
   }
 
-  hasNamedGraph (iri: string): boolean {
+  hasNamedGraph(iri: rdf.NamedNode): boolean {
     return this._namedGraphs.has(iri)
   }
 
-  deleteNamedGraph (iri: string): void {
+  deleteNamedGraph(iri: rdf.NamedNode): void {
     if (this._namedGraphs.has(iri)) {
       this._namedGraphs.delete(iri)
     } else {

@@ -24,12 +24,13 @@ SOFTWARE.
 
 'use strict'
 
+
 module.exports = {
   query: (...where) => {
     return { type: 'query', where }
   },
   triple: (s, p, o) => {
-    return {subject: s, predicate: p, object: o}
+    return { subject: s, predicate: p, object: o }
   },
   bgp: (...triples) => {
     return { type: 'bgp', triples }
@@ -47,8 +48,10 @@ module.exports = {
     return { type: 'filter', expression }
   },
   placeholder: (s) => {
-    return { type: 'bgp', triples: [
-      {subject: s, predicate: 'http://example.org#foo', object: '"foo"@en'}
-    ] }
+    return {
+      type: 'bgp', triples: [
+        { subject: s, predicate: 'http://example.org#foo', object: '"foo"@en' }
+      ]
+    }
   }
 }
