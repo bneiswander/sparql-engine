@@ -36,7 +36,7 @@ import { LRUBGPCache } from '../../src/engine/cache/bgp-cache'
  * @param {*} graphIRI - Graph's IRI
  */
 function formatBGP(patterns, graphIRI) {
-  return { patterns: patterns.map(formatPattern), graphIRI }
+  return { patterns: patterns.map(formatPattern), graphIRI: rdf.createIRI(graphIRI) }
 }
 
 function formatPattern(pattern) {

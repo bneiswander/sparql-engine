@@ -261,7 +261,7 @@ export namespace fts {
     const classicPatterns: SPARQL.Triple[] = []
     // find, validate and group all magic triples per query variable
     const patterns: SPARQL.Triple[] = []
-    const magicGroups = new Map<rdf.Variable, SPARQL.Triple[]>()
+    const magicGroups = new Map<string, SPARQL.Triple[]>()
     const prefix = rdf.SES('').value
     bgp.forEach(triple => {
       // A magic triple is an IRI prefixed by 'https://callidon.github.io/sparql-engine/search#'
@@ -270,10 +270,10 @@ export namespace fts {
         if (!rdf.isVariable(triple.subject)) {
           throw new SyntaxError(`Invalid Full Text Search query: the subject of the magic triple ${triple} must a valid URI/IRI.`)
         }
-        if (!magicGroups.has(triple.subject)) {
-          magicGroups.set(triple.subject, [triple])
+        if (!magicGroups.has(triple.subject.value)) {
+          magicGroups.set(triple.subject.value, [triple])
         } else {
-          magicGroups.get(triple.subject)!.push(triple)
+          magicGroups.get(triple.subject.value)!.push(triple)
         }
       } else {
         patterns.push(triple)
@@ -283,17 +283,17 @@ export namespace fts {
     patterns.forEach(pattern => {
       const subjectVariable = pattern.subject as rdf.Variable
       const objectVariable = pattern.subject as rdf.Variable
-      if (magicGroups.has(subjectVariable)) {
+      if (magicGroups.has(subjectVariable.value)) {
         queries.push({
           pattern,
           variable: subjectVariable,
-          magicTriples: magicGroups.get(subjectVariable)!
+          magicTriples: magicGroups.get(subjectVariable.value)!
         })
-      } else if (magicGroups.has(objectVariable)) {
+      } else if (magicGroups.has(objectVariable.value)) {
         queries.push({
           pattern,
           variable: objectVariable,
-          magicTriples: magicGroups.get(objectVariable)!
+          magicTriples: magicGroups.get(objectVariable.value)!
         })
       } else {
         classicPatterns.push(pattern)

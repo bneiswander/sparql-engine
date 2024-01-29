@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeEach, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 
 const GRAPH_A_IRI = 'http://example.org#some-graph-a'
@@ -46,7 +46,7 @@ describe('SPARQL UPDATE: ADD queries', () => {
       name: 'ADD DEFAULT to NAMED',
       query: `ADD DEFAULT TO <${GRAPH_B_IRI}>`,
       testFun: () => {
-        const triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getTriples('https://dblp.org/pers/m/Minier:Thomas')
+        const triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getQuads('https://dblp.org/pers/m/Minier:Thomas')
         expect(triples.length).to.equal(11)
       }
     },
@@ -54,7 +54,7 @@ describe('SPARQL UPDATE: ADD queries', () => {
       name: 'ADD NAMED to DEFAULT',
       query: `ADD <${GRAPH_B_IRI}> TO DEFAULT`,
       testFun: () => {
-        const triples = engine._graph._store.getTriples('https://dblp.org/pers/g/Grall:Arnaud')
+        const triples = engine._graph._store.getQuads('https://dblp.org/pers/g/Grall:Arnaud')
         expect(triples.length).to.equal(10)
       }
     }

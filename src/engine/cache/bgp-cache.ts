@@ -49,7 +49,7 @@ interface SavedBGP {
  * @param bgp - BGP to hash
  */
 function hashBasicGraphPattern(bgp: BasicGraphPattern): string {
-  return `${sparql.hashBGP(bgp.patterns)}&graph-iri=${bgp.graphIRI}`
+  return `${sparql.hashBGP(bgp.patterns)}&graph-iri=${bgp.graphIRI.value}`
 }
 
 /**

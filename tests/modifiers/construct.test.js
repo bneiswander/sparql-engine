@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils'
+import { TestEngine, getGraph } from '../utils'
 
 describe('CONSTRUCT SPARQL queries', () => {
   let engine = null
@@ -60,16 +60,17 @@ describe('CONSTRUCT SPARQL queries', () => {
     const results = await engine.execute(query).toArray()
     results.forEach(triple => {
       expect(triple).to.have.all.keys('subject', 'predicate', 'object')
-      expect(triple.subject).to.equal('https://dblp.org/pers/m/Minier:Thomas')
-      expect(triple.predicate).to.be.oneOf([
+      expect(triple.subject.value).to.equal('https://dblp.org/pers/m/Minier:Thomas')
+      expect(triple.predicate.value).to.be.oneOf([
         'https://dblp.uni-trier.de/rdf/schema-2017-04-18#primaryFullPersonName',
         'https://dblp.uni-trier.de/rdf/schema-2017-04-18#authorOf'
       ])
-      if (triple.predicate === 'https://dblp.uni-trier.de/rdf/schema-2017-04-18#primaryFullPersonName') {
-        expect(triple.object).to.equal('"Thomas Minier"@en')
+      if (triple.predicate.value === 'https://dblp.uni-trier.de/rdf/schema-2017-04-18#primaryFullPersonName') {
+        expect(triple.object.value).to.equal('Thomas Minier')
+        expect(triple.object.id).to.equal('"Thomas Minier"@en')
       } else {
-        expect(triple.object).to.be.oneOf(expectedArticles)
-        expectedArticles = expectedArticles.filter(a => a !== triple.object)
+        expect(triple.object.value).to.be.oneOf(expectedArticles)
+        expectedArticles = expectedArticles.filter(a => a !== triple.object.value)
       }
 
     })

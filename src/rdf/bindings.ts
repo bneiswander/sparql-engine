@@ -94,11 +94,32 @@ export abstract class Bindings {
   abstract has(variable: rdf.Term): variable is rdf.Variable
 
   /**
+   * Test if mappings exists for a SPARQL variable
+   * 
+   * NB brordened to allow general term check.
+   * anything not a vairable will alwaybe false, but saves checking the type of the term.
+   * @param variable - SPARQL variable
+   * @return True if a mappings exists for this variable, False otherwise
+   */
+  hasVariable(variable: string): boolean {
+    return this.has(rdf.createVariable(variable))
+  }
+
+  /**
    * Add a mapping SPARQL variable -> RDF Term to the set
    * @param variable - SPARQL variable
    * @param value - RDF Term
    */
   abstract set(variable: rdf.Variable, value: Binding): void
+
+  /**
+   * Add a mapping SPARQL variable -> RDF Term to the set
+   * @param variable - SPARQL variable as string
+   * @param value - RDF Term
+   */
+  setVariable(variable: string, value: Binding): void {
+    this.set(rdf.createVariable(variable), value)
+  }
 
   /**
    * Get metadata attached to the set using a key
@@ -389,7 +410,7 @@ export abstract class Bindings {
  * @author Thomas Minier
  */
 export class BindingBase extends Bindings {
-  private readonly _content: Map<rdf.Variable, sparql.BoundedTripleValue | rdf.Variable>
+  private readonly _content: Map<string, sparql.BoundedTripleValue | rdf.Variable>
 
   constructor() {
     super()
@@ -459,7 +480,7 @@ export class BindingBase extends Bindings {
   }
 
   variables(): IterableIterator<rdf.Variable> {
-    return this._content.keys()
+    return Array.from(this._content.keys()).map(k => rdf.createVariable(k)).values()
   }
 
   values(): IterableIterator<Binding> {
@@ -467,15 +488,19 @@ export class BindingBase extends Bindings {
   }
 
   get(variable: rdf.Variable): Binding | null {
-    if (this._content.has(variable)) {
-      return this._content.get(variable)!
+    if (this._content.has(variable.value)) {
+      return this._content.get(variable.value)!
     }
     return null
   }
 
+  getVariable(variable: string): Binding | null {
+    return this.get(rdf.createVariable(variable))
+  }
+
   getBound(variable: rdf.Variable): sparql.BoundedTripleValue {
-    if (this._content.has(variable)) {
-      const binding = this._content.get(variable)!
+    if (this._content.has(variable.value)) {
+      const binding = this._content.get(variable.value)!
       if (!rdf.isVariable(binding)) {
         return binding
       }
@@ -484,11 +509,16 @@ export class BindingBase extends Bindings {
   }
 
   has(variable: rdf.Term): variable is rdf.Variable {
-    return this._content.has(variable as rdf.Variable)
+    if (rdf.isVariable(variable)) {
+      return this._content.has(variable.value)
+    }
+    //FIXME may be legitimate calls that need to be handled differently, say with just false
+    // but being agressive with the error for now.
+    throw new Error(`Term ${variable} is not a variable`)
   }
 
   set(variable: rdf.Variable, value: Binding): void {
-    this._content.set(variable, value)
+    this._content.set(variable.value, value)
   }
 
   clear(): void {
@@ -500,6 +530,6 @@ export class BindingBase extends Bindings {
   }
 
   forEach(callback: (variable: rdf.Variable, value: Binding) => void): void {
-    this._content.forEach((value, variable) => callback(variable, value))
+    this._content.forEach((value, variable) => callback(rdf.createVariable(variable), value))
   }
 }

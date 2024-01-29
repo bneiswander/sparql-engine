@@ -24,9 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { expect } from 'chai'
-import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { beforeAll, describe, expect, it } from 'vitest'
+import { TestEngine, getGraph } from '../utils.js'
 
 describe('SPARQL queries with LIMIT/OFFSET', () => {
   let engine = null
@@ -47,11 +46,12 @@ describe('SPARQL queries with LIMIT/OFFSET', () => {
         ?s dblp-rdf:primaryFullPersonName ?name .
         ?s dblp-rdf:authorOf ?article .
       }
+      ORDER BY desc(?article)
       OFFSET 2`,
       results: [
         'https://dblp.org/rec/conf/esws/MinierSMV18',
-        'https://dblp.org/rec/conf/esws/MinierSMV18a',
-        'https://dblp.org/rec/journals/corr/abs-1806-00227'
+        'https://dblp.org/rec/conf/esws/MinierMSM17a',
+        'https://dblp.org/rec/conf/esws/MinierMSM17',
       ]
     },
     {
@@ -65,10 +65,11 @@ describe('SPARQL queries with LIMIT/OFFSET', () => {
         ?s dblp-rdf:primaryFullPersonName ?name .
         ?s dblp-rdf:authorOf ?article .
       }
+      ORDER BY desc(?article)
       LIMIT 2`,
       results: [
-        'https://dblp.org/rec/conf/esws/MinierMSM17',
-        'https://dblp.org/rec/conf/esws/MinierMSM17a'
+        'https://dblp.org/rec/journals/corr/abs-1806-00227',
+        'https://dblp.org/rec/conf/esws/MinierSMV18a',
       ]
     },
     {
@@ -82,11 +83,12 @@ describe('SPARQL queries with LIMIT/OFFSET', () => {
         ?s dblp-rdf:primaryFullPersonName ?name .
         ?s dblp-rdf:authorOf ?article .
       }
+      ORDER BY desc(?article)
       OFFSET 3
       LIMIT 2`,
       results: [
-        'https://dblp.org/rec/conf/esws/MinierSMV18',
-        'https://dblp.org/rec/conf/esws/MinierSMV18a'
+        'https://dblp.org/rec/conf/esws/MinierMSM17a',
+        'https://dblp.org/rec/conf/esws/MinierMSM17',
       ]
     }
   ]
@@ -95,10 +97,11 @@ describe('SPARQL queries with LIMIT/OFFSET', () => {
     it(d.text, async () => {
       const expectedCardinality = d.results.length
       const results = await engine.execute(d.query).toArray()
+      expect(results).toHaveLength(expectedCardinality)
       results.forEach(b => {
-        expect(b['?article']).to.be.oneOf(d.results)
-        d.results.splice(d.results.indexOf(b['?article']), 1)
-        expect(results).toHaveLength(expectedCardinality)
+        const value = b.getVariable('article').value
+        expect(d.results.includes(value)).toBe(true)
+        d.results.splice(d.results.indexOf(value), 1)
       })
     })
   })

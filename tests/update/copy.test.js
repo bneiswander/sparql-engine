@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeEach, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 
 const GRAPH_A_IRI = 'http://example.org#some-graph-a'
@@ -47,12 +47,12 @@ describe('SPARQL UPDATE: COPY queries', () => {
       query: `COPY DEFAULT TO <${GRAPH_B_IRI}>`,
       testFun: () => {
         // destination graph should only contains data from the source
-        let triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getTriples('https://dblp.org/pers/m/Minier:Thomas')
+        let triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getQuads('https://dblp.org/pers/m/Minier:Thomas')
         expect(triples.length).to.equal(11)
-        triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getTriples('https://dblp.org/pers/g/Grall:Arnaud')
+        triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getQuads('https://dblp.org/pers/g/Grall:Arnaud')
         expect(triples.length).to.equal(0)
         // source graph should not be empty
-        triples = engine._graph._store.getTriples()
+        triples = engine._graph._store.getQuads()
         expect(triples.length).to.not.equal(0)
       }
     },
@@ -61,12 +61,12 @@ describe('SPARQL UPDATE: COPY queries', () => {
       query: `COPY <${GRAPH_B_IRI}> TO DEFAULT`,
       testFun: () => {
         // destination graph should only contains data from the source
-        let triples = engine._graph._store.getTriples('https://dblp.org/pers/g/Grall:Arnaud')
+        let triples = engine._graph._store.getQuads('https://dblp.org/pers/g/Grall:Arnaud')
         expect(triples.length).to.equal(10)
-        triples = engine._graph._store.getTriples('https://dblp.org/pers/m/Minier:Thomas')
+        triples = engine._graph._store.getQuads('https://dblp.org/pers/m/Minier:Thomas')
         expect(triples.length).to.equal(0)
         // source graph should not be empty
-        triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getTriples()
+        triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getQuads()
         expect(triples.length).to.not.equal(0)
       }
     }

@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeEach, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 
 const GRAPH_IRI = 'htpp://example.org#some-graph'
@@ -48,7 +48,7 @@ describe('SPARQL UPDATE: INSERT DATA queries', () => {
     engine.execute(query)
       .execute()
       .then(() => {
-        const triples = engine._graph._store.getTriples('http://example/book1', null, null)
+        const triples = engine._graph._store.getQuads('http://example/book1', null, null)
         expect(triples.length).to.equal(1)
         expect(triples[0].subject).to.equal('http://example/book1')
         expect(triples[0].predicate).to.equal('http://purl.org/dc/elements/1.1/title')
@@ -70,7 +70,7 @@ describe('SPARQL UPDATE: INSERT DATA queries', () => {
     await engine.execute(query)
       .execute()
       .then(() => {
-        const triples = engine.getNamedGraph(GRAPH_IRI)._store.getTriples('http://example/book1', null, null)
+        const triples = engine.getNamedGraph(GRAPH_IRI)._store.getQuads('http://example/book1', null, null)
         expect(triples.length).to.equal(1)
         expect(triples[0].subject).to.equal('http://example/book1')
         expect(triples[0].predicate).to.equal('http://purl.org/dc/elements/1.1/title')

@@ -63,7 +63,7 @@ export type CustomFunctions = { [key: string]: (...args: (rdf.Term | rdf.Term[] 
  * @return True if the SPARQL expression is a SPARQL operation, False otherwise
  */
 function isOperation(expr: SPARQL.Expression): expr is SPARQL.OperationExpression {
-  return (expr as SPARQL.OperationExpression).type === 'operation'
+  return (expr as SPARQL.OperationExpression)?.type === 'operation'
 }
 
 /**
@@ -72,7 +72,7 @@ function isOperation(expr: SPARQL.Expression): expr is SPARQL.OperationExpressio
  * @return True if the SPARQL expression is a SPARQL aggregation, False otherwise
  */
 function isAggregation(expr: SPARQL.Expression): expr is SPARQL.AggregateExpression {
-  return (expr as SPARQL.AggregateExpression).type === 'aggregate'
+  return (expr as SPARQL.AggregateExpression)?.type === 'aggregate'
 }
 
 /**
@@ -81,7 +81,7 @@ function isAggregation(expr: SPARQL.Expression): expr is SPARQL.AggregateExpress
  * @return True if the SPARQL expression is a SPARQL function call, False otherwise
  */
 function isFunctionCall(expr: SPARQL.Expression): expr is SPARQL.FunctionCallExpression {
-  return (expr as SPARQL.FunctionCallExpression).type === 'functionCall'
+  return (expr as SPARQL.FunctionCallExpression)?.type === 'functionCall'
 }
 
 /**

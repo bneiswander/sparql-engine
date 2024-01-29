@@ -30,7 +30,7 @@ import { rdf, sparql } from '../../utils.js'
  * All bindings corresponding to the save value of the joinKey are aggregated in a list.
  */
 export default class HashJoinTable {
-  private readonly _content: Map<rdf.Variable | sparql.BoundedTripleValue, Bindings[]>
+  private readonly _content: Map<string, Bindings[]>
   constructor() {
     this._content = new Map()
   }
@@ -41,11 +41,11 @@ export default class HashJoinTable {
    * @param bindings - Bindings to save
    */
   put(key: rdf.Variable | sparql.BoundedTripleValue, bindings: Bindings): void {
-    if (!this._content.has(key)) {
-      this._content.set(key, [])
+    if (!this._content.has(key.value)) {
+      this._content.set(key.value, [])
     }
-    const old: Bindings[] = this._content.get(key)!
-    this._content.set(key, old.concat([bindings]))
+    const old: Bindings[] = this._content.get(key.value)!
+    this._content.set(key.value, old.concat([bindings]))
   }
 
   /**
@@ -55,10 +55,11 @@ export default class HashJoinTable {
    * @param  bindings - Bindings to join with
    * @return Join results, or an empty list if there is none.
    */
+  //FIXME potential clash between rdf.Variable and sparql.BoundedTripleValue having same value
   join(key: rdf.Variable | sparql.BoundedTripleValue, bindings: Bindings): Bindings[] {
-    if (!this._content.has(key)) {
+    if (!this._content.has(key.value)) {
       return []
     }
-    return this._content.get(key)!.map((b: Bindings) => b.union(bindings))
+    return this._content.get(key.value)!.map((b: Bindings) => b.union(bindings))
   }
 }

@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeEach, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 
 const GRAPH_A_IRI = 'http://example.org#some-graph-a'
@@ -46,7 +46,7 @@ describe('SPARQL UPDATE: CLEAR queries', () => {
       name: 'CLEAR DEFAULT',
       query: 'CLEAR DEFAULT',
       testFun: () => {
-        const triples = engine._graph._store.getTriples()
+        const triples = engine._graph._store.getQuads()
         expect(triples.length).to.equal(0)
       }
     },
@@ -54,9 +54,9 @@ describe('SPARQL UPDATE: CLEAR queries', () => {
       name: 'CLEAR ALL',
       query: 'CLEAR ALL',
       testFun: () => {
-        let triples = engine._graph._store.getTriples()
+        let triples = engine._graph._store.getQuads()
         expect(triples.length).to.equal(0)
-        triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getTriples()
+        triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getQuads()
         expect(triples.length).to.equal(0)
       }
     },
@@ -64,9 +64,9 @@ describe('SPARQL UPDATE: CLEAR queries', () => {
       name: 'CLEAR NAMED',
       query: 'CLEAR NAMED',
       testFun: () => {
-        let triples = engine._graph._store.getTriples()
+        let triples = engine._graph._store.getQuads()
         expect(triples.length).to.not.equal(0)
-        triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getTriples()
+        triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getQuads()
         expect(triples.length).to.equal(0)
       }
     },
@@ -74,9 +74,9 @@ describe('SPARQL UPDATE: CLEAR queries', () => {
       name: 'CLEAR GRAPH',
       query: `CLEAR GRAPH <${GRAPH_B_IRI}>`,
       testFun: () => {
-        let triples = engine._graph._store.getTriples()
+        let triples = engine._graph._store.getQuads()
         expect(triples.length).to.not.equal(0)
-        triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getTriples()
+        triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getQuads()
         expect(triples.length).to.equal(0)
       }
     }

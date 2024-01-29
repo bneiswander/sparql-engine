@@ -185,7 +185,6 @@ export namespace rdf {
    * @return A new typed Literal in RDFJS format
    */
   export function createTypedLiteral(value: any, type?: NamedNode): Literal {
-    checkValue(value)
     return DataFactory.literal(`${value}`, type)
   }
 
@@ -313,7 +312,16 @@ export namespace rdf {
    * @return True of the term is a Variable, False otherwise
    */
   export function isVariable(term: Term | SPARQL.PropertyPath): term is Variable {
-    return (term as Term).termType === 'Variable'
+    return (term as Term)?.termType === 'Variable'
+  }
+
+  /**
+   * Test if a RDFJS Term is a Variable
+   * @param term - RDFJS Term
+   * @return True of the term is a Variable, False otherwise
+   */
+  export function isWildcard(term: Term | SPARQL.PropertyPath | SPARQL.Wildcard): term is SPARQL.Wildcard {
+    return (term as SPARQL.Wildcard)?.termType === 'Wildcard'
   }
 
   /**

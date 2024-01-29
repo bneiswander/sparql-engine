@@ -24,9 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 describe('SELECT SPARQL queries', () => {
   let engine = null
@@ -35,7 +34,7 @@ describe('SELECT SPARQL queries', () => {
     engine = new TestEngine(g)
   })
 
-  it('should evaluate simple SELECT SPARQL queries', async () => {
+  it('should evaluate simple SELECT SPARQL queries', async ({ expect }) => {
     const query = `
     PREFIX dblp-pers: <https://dblp.org/pers/m/>
     PREFIX dblp-rdf: <https://dblp.uni-trier.de/rdf/schema-2017-04-18#>
@@ -47,12 +46,13 @@ describe('SELECT SPARQL queries', () => {
     }`
     const results = await engine.execute(query).toArray()
     results.forEach(b => {
-      expect(b).to.have.keys('?name', '?article')
+      expect(b.hasVariable('name')).toBe(true)
+      expect(b.hasVariable('article')).toBe(true)
     })
     expect(results.length).to.equal(5)
   })
 
-  it('should evaluate SELECT * queries', async () => {
+  it('should evaluate SELECT * queries', async ({ expect }) => {
     const query = `
     PREFIX dblp-pers: <https://dblp.org/pers/m/>
     PREFIX dblp-rdf: <https://dblp.uni-trier.de/rdf/schema-2017-04-18#>
@@ -65,13 +65,15 @@ describe('SELECT SPARQL queries', () => {
     const results = await engine.execute(query).toArray()
 
     results.forEach(b => {
-      expect(b).to.have.keys('?name', '?article', '?s')
+      expect(b.hasVariable('?name')).toBe(true)
+      expect(b.hasVariable('?article')).toBe(true)
+      expect(b.hasVariable('?s')).toBe(true)
     })
     expect(results.length).to.equal(5)
 
   })
 
-  it('should evaluate SELECT DISTINCT queries', async () => {
+  it('should evaluate SELECT DISTINCT queries', async ({ expect }) => {
     const query = `
     PREFIX dblp-pers: <https://dblp.org/pers/m/>
     PREFIX dblp-rdf: <https://dblp.uni-trier.de/rdf/schema-2017-04-18#>
@@ -87,7 +89,7 @@ describe('SELECT SPARQL queries', () => {
     }`
     const results = await engine.execute(query).toArray()
     results.forEach(b => {
-      expect(b).to.have.keys('?name')
+      expect(b.hasVariable('?name')).toBe(true)
     })
     expect(results.length).to.equal(1)
   })
