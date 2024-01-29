@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils'
+import { TestEngine, getGraph } from '../utils'
 
 describe('DESCRIBE SPARQL queries', () => {
   let engine = null
@@ -47,8 +47,8 @@ describe('DESCRIBE SPARQL queries', () => {
 
     results.forEach(triple => {
       expect(triple).to.have.all.keys('subject', 'predicate', 'object')
-      expect(triple.subject).to.equal('https://dblp.org/pers/m/Minier:Thomas')
-      expect(triple.predicate).to.be.oneOf([
+      expect(triple.subject.value).to.equal('https://dblp.org/pers/m/Minier:Thomas')
+      expect(triple.predicate.value).to.be.oneOf([
         'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
         'https://dblp.uni-trier.de/rdf/schema-2017-04-18#primaryFullPersonName',
         'https://dblp.uni-trier.de/rdf/schema-2017-04-18#authorOf',

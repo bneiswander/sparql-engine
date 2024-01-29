@@ -257,7 +257,7 @@ export abstract class PipelineEngine {
    * @param  selector - Optional function to select which value you want to check as distinct.
    * @return A PipelineStage that emits items from the source PipelineStage with distinct values.
    */
-  distinct<T, K>(input: PipelineStage<T>, selector?: (value: T) => T | K): PipelineStage<T> {
+  distinct<T, K = T>(input: PipelineStage<T>, selector?: (value: T) => K): PipelineStage<T> {
     if (isUndefined(selector)) {
       selector = identity
     }

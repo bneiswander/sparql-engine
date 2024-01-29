@@ -25,7 +25,7 @@ SOFTWARE.
 'use strict'
 
 import { beforeEach, describe, expect, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 
 describe('SPARQL queries with OPTIONAL', () => {
@@ -51,9 +51,9 @@ describe('SPARQL queries with OPTIONAL', () => {
     results.forEach(b => {
       b = b.toObject()
       expect(b).to.have.keys('?name', '?article', '?label')
-      expect(b['?label']).to.equal('UNBOUND')
+      expect(b['?label']).to.equal('"UNBOUND"')
     })
-    expect(results.length).to.equal(5)
+    expect(results).toHaveLength(5)
   })
 
 
@@ -73,13 +73,13 @@ describe('SPARQL queries with OPTIONAL', () => {
       expect(b).to.have.keys('?s', '?article')
       expect(b['?s']).to.be.oneOf(['https://dblp.org/pers/m/Minier:Thomas', 'https://dblp.org/pers/m/Minier:Thomas_2'])
       if (b['?s'] === 'https://dblp.org/pers/m/Minier:Thomas_2') {
-        expect(b['?article']).to.equal('UNBOUND')
+        expect(b['?article']).to.equal('"UNBOUND"')
       } else {
-        expect(b['?article']).to.not.equal('UNBOUND')
+        expect(b['?article']).to.not.equal('"UNBOUND"')
       }
 
     })
-    expect(results.length).to.equal(6)
+    expect(results).toHaveLength(6)
   })
 
   it('should evaluate complex OPTIONAL clauses that yield nothing', async () => {
@@ -98,9 +98,9 @@ describe('SPARQL queries with OPTIONAL', () => {
     results.forEach(b => {
       b = b.toObject()
       expect(b).to.have.keys('?name', '?article')
-      expect(b['?article']).to.equal('UNBOUND')
+      expect(b['?article']).to.equal('"UNBOUND"')
     })
-    expect(results.length).to.equal(1)
+    expect(results).toHaveLength(1)
   })
 
 
@@ -121,12 +121,12 @@ describe('SPARQL queries with OPTIONAL', () => {
       expect(b).to.have.keys('?s', '?article')
       expect(b['?s']).to.be.oneOf(['https://dblp.org/pers/m/Minier:Thomas', 'https://dblp.org/pers/m/Minier:Thomas_2'])
       if (b['?s'] === 'https://dblp.org/pers/m/Minier:Thomas_2') {
-        expect(b['?article']).to.equal('UNBOUND')
+        expect(b['?article']).to.equal('"UNBOUND"')
       } else {
-        expect(b['?article']).to.not.equal('UNBOUND')
+        expect(b['?article']).to.not.equal('"UNBOUND"')
       }
     })
-    expect(results.length).to.equal(6)
+    expect(results).toHaveLength(6)
   })
 
 
@@ -146,12 +146,9 @@ describe('SPARQL queries with OPTIONAL', () => {
     }
     `
     const results = await engine.execute(query).toArray()
-    results.forEach(b => {
-      b = b.toObject()
-
-    })
-    expect(results.length).to.equal(2)
+    expect(results).toHaveLength(2)
     results.map(b => {
+      b = b.toObject()
       expect(b['?title']).to.be.oneOf(['"SPARQL Tutorial"', '"The Semantic Web"'])
       expect(b['?price']).to.be.oneOf([
         '"42"^^http://www.w3.org/2001/XMLSchema#integer',
@@ -179,12 +176,9 @@ describe('SPARQL queries with OPTIONAL', () => {
     }
     `
     const results = await engine.execute(query).toArray()
-    results.forEach(b => {
-      b = b.toObject()
-
-    })
-    expect(results.length).to.equal(2)
+    expect(results).toHaveLength(2)
     results.map(b => {
+      b = b.toObject()
       expect(b['?title']).to.be.oneOf(['"SPARQL Tutorial"', '"The Semantic Web"'])
       expect(b['?price']).to.be.oneOf([
         '"42"^^http://www.w3.org/2001/XMLSchema#integer',
@@ -210,16 +204,13 @@ describe('SPARQL queries with OPTIONAL', () => {
     }
     `
     const results = await engine.execute(query).toArray()
-    results.forEach(b => {
-      b = b.toObject()
-
-    })
-    expect(results.length).to.equal(2)
+    expect(results).toHaveLength(2)
     results.map(b => {
+      b = b.toObject()
       expect(b['?title']).to.be.oneOf(['"SPARQL Tutorial"', '"The Semantic Web"'])
       expect(b['?price']).to.be.oneOf([
         '"42"^^http://www.w3.org/2001/XMLSchema#integer',
-        'UNBOUND'
+        '"UNBOUND"'
       ])
     })
   })
@@ -243,16 +234,13 @@ describe('SPARQL queries with OPTIONAL', () => {
     }
     `
     const results = await engine.execute(query).toArray()
-    results.forEach(b => {
-      b = b.toObject()
-
-    })
-    expect(results.length).to.equal(2)
+    expect(results).toHaveLength(2)
     results.map(b => {
+      b = b.toObject()
       expect(b['?title']).to.be.oneOf(['"SPARQL Tutorial"', '"The Semantic Web"'])
       expect(b['?price']).to.be.oneOf([
         '"42"^^http://www.w3.org/2001/XMLSchema#integer',
-        'UNBOUND'
+        '"UNBOUND"'
       ])
     })
   })

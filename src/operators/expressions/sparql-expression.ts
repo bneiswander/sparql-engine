@@ -24,7 +24,7 @@ SOFTWARE.
 
 'use strict'
 
-import { isArray, isString, merge, uniqBy } from 'lodash'
+import { isArray, merge, uniqBy } from 'lodash'
 import * as SPARQL from 'sparqljs'
 import { Bindings } from '../../rdf/bindings.js'
 import { rdf } from '../../utils.js'
@@ -36,7 +36,7 @@ import SPARQL_OPERATIONS from './sparql-operations.js'
 /**
  * An input SPARQL expression to be compiled
  */
-export type InputExpression = SPARQL.Expression | string | string[]
+export type InputExpression = SPARQL.Expression | rdf.Term | rdf.Term[]
 
 /**
  * The output of a SPARQL expression's evaluation, one of the following
@@ -63,7 +63,7 @@ export type CustomFunctions = { [key: string]: (...args: (rdf.Term | rdf.Term[] 
  * @return True if the SPARQL expression is a SPARQL operation, False otherwise
  */
 function isOperation(expr: SPARQL.Expression): expr is SPARQL.OperationExpression {
-  return (expr as SPARQL.OperationExpression).type === 'operation'
+  return (expr as SPARQL.OperationExpression)?.type === 'operation'
 }
 
 /**
@@ -72,7 +72,7 @@ function isOperation(expr: SPARQL.Expression): expr is SPARQL.OperationExpressio
  * @return True if the SPARQL expression is a SPARQL aggregation, False otherwise
  */
 function isAggregation(expr: SPARQL.Expression): expr is SPARQL.AggregateExpression {
-  return (expr as SPARQL.AggregateExpression).type === 'aggregate'
+  return (expr as SPARQL.AggregateExpression)?.type === 'aggregate'
 }
 
 /**
@@ -81,7 +81,7 @@ function isAggregation(expr: SPARQL.Expression): expr is SPARQL.AggregateExpress
  * @return True if the SPARQL expression is a SPARQL function call, False otherwise
  */
 function isFunctionCall(expr: SPARQL.Expression): expr is SPARQL.FunctionCallExpression {
-  return (expr as SPARQL.FunctionCallExpression).type === 'functionCall'
+  return (expr as SPARQL.FunctionCallExpression)?.type === 'functionCall'
 }
 
 /**
@@ -126,15 +126,13 @@ export class SPARQLExpression {
     if (rdf.isVariable(expression as rdf.Term)) {
       return bindArgument(expression as rdf.Variable)
     }
-    if (isString(expression)) {
-      const compiledTerm = rdf.fromN3(expression)
+    if (rdf.isTerm(expression)) {
+      const compiledTerm = expression
       return () => compiledTerm
     } else if (isArray(expression)) {
       // case 2: the expression is a list of RDF terms
       // because IN and NOT IN expressions accept arrays as argument
-      // const compiledTerms = expression.map(rdf.fromN3)
-      const compiledTerms = (expression as string[]).map(e => this._compileExpression(e, customFunctions))
-      return () => compiledTerms as ExpressionOutput
+      return () => expression as ExpressionOutput
     } else if (isOperation(expression)) {
       // case 3: a SPARQL operation, so we recursively compile each argument
       // and then evaluate the expression
@@ -152,11 +150,10 @@ export class SPARQLExpression {
       const aggregation = SPARQL_AGGREGATES[expression.aggregation as keyof typeof SPARQL_AGGREGATES]
       return (bindings: Bindings) => {
         if (bindings.hasProperty('__aggregate')) {
-          console.debug('SPARQL aggregation', bindings.getProperty('__aggregate'))
           const aggVariable = (expression.expression as rdf.Variable)
           let rows = bindings.getProperty('__aggregate')
           if (expression.distinct) {
-            rows[aggVariable.value] = uniqBy(rows[aggVariable.value], rdf.toN3)
+            rows.set(aggVariable.value, uniqBy(rows.get(aggVariable.value), rdf.toN3))
           }
           return aggregation(aggVariable, rows, expression.separator!)
         }

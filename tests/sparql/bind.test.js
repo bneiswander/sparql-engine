@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 
 describe('SPARQL BIND', () => {
@@ -97,7 +97,6 @@ describe('SPARQL BIND', () => {
     })
     expect(results.length).to.equal(1)
   })
-
 
   it('should evaluate a BIND clause with the COALESCE function', async () => {
     const query = `

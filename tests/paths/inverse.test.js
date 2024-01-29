@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils'
+import { TestEngine, getGraph } from '../utils'
 
 describe('SPARQL property paths: inverse paths', () => {
     let engine = null
@@ -43,7 +43,7 @@ describe('SPARQL property paths: inverse paths', () => {
         SELECT * WHERE {
             <mailto:alice@example> ^foaf:mbox ?s .
         }`
-        const results = await engine.execute().toArray()
+        const results = await engine.execute(query).toArray()
         results.forEach(b => {
             b = b.toObject()
             expect(b).to.have.property('?s')
@@ -63,7 +63,7 @@ describe('SPARQL property paths: inverse paths', () => {
         SELECT * WHERE {
             ?x foaf:knows/^foaf:knows ?y .
         }`
-        const results = await engine.execute().toArray()
+        const results = await engine.execute(query).toArray()
         results.forEach(b => {
             b = b.toObject()
             expect(b).to.have.property('?x')
@@ -98,7 +98,7 @@ describe('SPARQL property paths: inverse paths', () => {
         SELECT * WHERE {
             ?s ^(foaf:knows/foaf:phone) ?o .
         }`
-        const results = await engine.execute().toArray()
+        const results = await engine.execute(query).toArray()
         results.forEach(b => {
             b = b.toObject()
             expect(b).to.have.property('?s')
@@ -119,7 +119,7 @@ describe('SPARQL property paths: inverse paths', () => {
         SELECT * WHERE {
             ?s ^(^foaf:knows/(:love|:hate)) ?o .
         }`
-        const results = await engine.execute().toArray()
+        const results = await engine.execute(query).toArray()
         results.forEach(b => {
             b = b.toObject()
             expect(b).to.have.property('?s')

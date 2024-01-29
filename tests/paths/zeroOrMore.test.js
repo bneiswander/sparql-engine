@@ -24,9 +24,9 @@ SOFTWARE.
 
 'use strict'
 
-import { expect } from 'chai'
-import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+
+import { beforeAll, describe, expect, it } from 'vitest'
+import { TestEngine, getGraph } from '../utils.js'
 
 describe('SPARQL property paths: Zero or More paths', () => {
     let engine = null
@@ -45,6 +45,7 @@ describe('SPARQL property paths: Zero or More paths', () => {
             ?s rdfs:subClassOf* ?type .
         }`
         const results = await engine.execute(query).toArray()
+        const seen = new Set()
         results.forEach(b => {
             b = b.toObject()
             expect(b).to.have.property('?s')
@@ -52,17 +53,23 @@ describe('SPARQL property paths: Zero or More paths', () => {
             switch (b['?s']) {
                 case 'http://example.org/Woman':
                     expect(b['?type']).to.be.oneOf(['http://example.org/Woman', 'http://example.org/Person', 'http://example.org/Human'])
+                    seen.add(b['?type'])
                     break;
                 case 'http://example.org/Man':
                     expect(b['?type']).to.be.oneOf(['http://example.org/Man', 'http://example.org/Person', 'http://example.org/Human'])
+                    seen.add(b['?type'])
                     break;
                 case 'http://example.org/Person':
                     expect(b['?type']).to.be.oneOf(['http://example.org/Person', 'http://example.org/Human'])
+                    seen.add(b['?type'])
                     break;
+                default:
+                    if (b['?s'] !== b['?type']) {
+                        throw new Error(`Unexpected result ${JSON.stringify(b, null, 2)}`)
+                    }
             }
-
         })
-        expect(results.length).to.equal(24)
+        expect(seen.size).toBe(4)
     })
 
 
@@ -75,6 +82,7 @@ describe('SPARQL property paths: Zero or More paths', () => {
             ?s (foaf:knows/:love)* ?name .
         }`
         const results = await engine.execute(query).toArray()
+        const seen = new Set()
         results.forEach(b => {
             b = b.toObject()
             expect(b).to.have.property('?s')
@@ -82,17 +90,23 @@ describe('SPARQL property paths: Zero or More paths', () => {
             switch (b['?s']) {
                 case 'http://example.org/Alice':
                     expect(b['?name']).to.be.oneOf(['http://example.org/Alice', 'http://example.org/Carol'])
+                    seen.add(b['?name'])
                     break;
                 case 'http://example.org/Bob':
                     expect(b['?name']).to.be.oneOf(['http://example.org/Didier', 'http://example.org/Bob'])
+                    seen.add(b['?name'])
                     break;
                 case 'http://example.org/Carol':
                     expect(b['?name']).to.be.oneOf(['http://example.org/Carol'])
+                    seen.add(b['?name'])
                     break;
+                default:
+                    if (b['?s'] !== b['?name']) {
+                        throw new Error(`Unexpected result ${JSON.stringify(b, null, 2)}`)
+                    }
             }
-
         })
-        expect(results.length).to.equal(22)
+        expect(seen.size).toBe(4)
     })
 
     it('should evaluate Zero or More alternative path', async () => {
@@ -104,6 +118,7 @@ describe('SPARQL property paths: Zero or More paths', () => {
             ?s (:hate|:love)* ?name .
         }`
         const results = await engine.execute(query).toArray()
+        const seen = new Set()
         results.forEach(b => {
             b = b.toObject()
             expect(b).to.have.property('?s')
@@ -111,20 +126,27 @@ describe('SPARQL property paths: Zero or More paths', () => {
             switch (b['?s']) {
                 case 'http://example.org/Alice':
                     expect(b['?name']).to.be.oneOf(['http://example.org/Alice', 'http://example.org/Didier'])
+                    seen.add(b['?name'])
                     break;
                 case 'http://example.org/Bob':
                     expect(b['?name']).to.be.oneOf(['http://example.org/Bob', 'http://example.org/Carol', 'http://example.org/Didier'])
+                    seen.add(b['?name'])
                     break;
                 case 'http://example.org/Carol':
                     expect(b['?name']).to.be.oneOf(['http://example.org/Carol', 'http://example.org/Didier'])
+                    seen.add(b['?name'])
                     break;
                 case 'http://example.org/Eve':
                     expect(b['?name']).to.be.oneOf(['http://example.org/Eve', 'http://example.org/Bob', 'http://example.org/Carol', 'http://example.org/Didier'])
+                    seen.add(b['?name'])
                     break;
+                default:
+                    if (b['?s'] !== b['?name']) {
+                        throw new Error(`Unexpected result ${JSON.stringify(b, null, 2)}`)
+                    }
             }
-
         })
-        expect(results.length).to.equal(26)
+        expect(seen.size).toBe(5)
     })
 
     it('should evaluate Zero or More negated path', async () => {
@@ -137,6 +159,7 @@ describe('SPARQL property paths: Zero or More paths', () => {
             ?s !(foaf:name|foaf:phone|foaf:skypeID|foaf:mbox|rdf:type|rdfs:subClassOf|foaf:knows)* ?o .
         }`
         const results = await engine.execute(query).toArray()
+        const seen = new Set()
         results.forEach(b => {
             b = b.toObject()
             expect(b).to.have.property('?s')
@@ -144,20 +167,27 @@ describe('SPARQL property paths: Zero or More paths', () => {
             switch (b['?s']) {
                 case 'http://example.org/Alice':
                     expect(b['?o']).to.be.oneOf(['http://example.org/Alice', 'http://example.org/Didier'])
+                    seen.add(b['?o'])
                     break;
                 case 'http://example.org/Bob':
                     expect(b['?o']).to.be.oneOf(['http://example.org/Bob', 'http://example.org/Carol', 'http://example.org/Didier'])
+                    seen.add(b['?o'])
                     break;
                 case 'http://example.org/Carol':
                     expect(b['?o']).to.be.oneOf(['http://example.org/Carol', 'http://example.org/Didier'])
+                    seen.add(b['?o'])
                     break;
                 case 'http://example.org/Eve':
                     expect(b['?o']).to.be.oneOf(['http://example.org/Eve', 'http://example.org/Bob', 'http://example.org/Carol', 'http://example.org/Didier'])
+                    seen.add(b['?o'])
                     break;
+                default:
+                    if (b['?s'] !== b['?o']) {
+                        throw new Error(`Unexpected result ${JSON.stringify(b, null, 2)}`)
+                    }
             }
-
         })
-        expect(results.length).to.equal(26)
+        expect(seen.size).toBe(5)
     })
 })
 

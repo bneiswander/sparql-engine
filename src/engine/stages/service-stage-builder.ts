@@ -64,7 +64,7 @@ export default class ServiceStageBuilder extends StageBuilder {
     const iri = node.name
     if (rdf.isNamedNode(iri)) {
       // auto-add the graph used to evaluate the SERVICE close if it is missing from the dataset
-      if ((this.dataset.getDefaultGraph().iri !== iri) && (!this.dataset.hasNamedGraph(iri))) {
+      if (!this.dataset.getDefaultGraph().iri.equals(iri) && !this.dataset.hasNamedGraph(iri)) {
         const graph = this.dataset.createGraph(iri)
         this.dataset.addNamedGraph(iri, graph)
       }
@@ -92,7 +92,7 @@ export default class ServiceStageBuilder extends StageBuilder {
   _buildIterator(source: PipelineStage<Bindings>, iri: rdf.NamedNode, subquery: SPARQL.Query, context: ExecutionContext): PipelineStage<Bindings> {
     const opts = context.clone()
     opts.defaultGraphs = [iri]
-    //FIXME or should this be output type
+
     return this._builder!._buildQueryPlan(subquery, opts, source) as PipelineStage<Bindings>
   }
 }

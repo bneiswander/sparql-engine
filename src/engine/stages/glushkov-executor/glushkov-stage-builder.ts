@@ -46,7 +46,7 @@ class Step<T> {
    * @param node - The label of a node in the RDF Graph
    * @param state - The ID of a State in the Automaton
    */
-  constructor(private _node: T, private _state: number) { }
+  constructor(private _node: T, private _state: number, private _isEqual: (a: T, b: T) => boolean) { }
 
   /**
    * Get the Automaton's state associated with this Step of the ResultPath
@@ -70,7 +70,7 @@ class Step<T> {
    * @return True if the Steps are equal, False otherwise
    */
   equals(step: Step<T>): boolean {
-    return this.node === step.node && this.state === step.state
+    return this._isEqual(this.node, step.node) && this.state === step.state
   }
 
   /**
@@ -78,7 +78,7 @@ class Step<T> {
    * @return A copy of this Step
    */
   clone(): Step<T> {
-    let copy = new Step<T>(this._node, this._state)
+    let copy = new Step<T>(this._node, this._state, this._isEqual)
     return copy
   }
 }
@@ -161,6 +161,8 @@ export default class GlushkovStageBuilder extends PathStageBuilder {
 
   private tempVariable = rdf.createVariable('?temp')
 
+  private isEqualTerms = (a: rdf.Term, b: rdf.Term) => a.equals(b)
+
   /**
    * Continues the execution of the SPARQL property path and builds the result's paths
    * @param rPath - Path being processed
@@ -209,9 +211,9 @@ export default class GlushkovStageBuilder extends PathStageBuilder {
         if (p !== null ? !transition.hasPredicate(p) : true) {
           let newStep
           if (forward) {
-            newStep = new Step(o, transition.to.name)
+            newStep = new Step(o, transition.to.name, this.isEqualTerms)
           } else {
-            newStep = new Step(o, transition.from.name)
+            newStep = new Step(o, transition.from.name, this.isEqualTerms)
           }
           if (!rPath.contains(newStep)) {
             let newPath = rPath.clone()
@@ -299,11 +301,11 @@ export default class GlushkovStageBuilder extends PathStageBuilder {
         if (p !== null ? !transition.hasPredicate(p) : true) {
           let path = new ResultPath<sparql.UnBoundedTripleValue>()
           if (forward) {
-            path.add(new Step<sparql.UnBoundedTripleValue>(s, transition.from.name))
-            path.add(new Step<sparql.UnBoundedTripleValue>(o, transition.to.name))
+            path.add(new Step<sparql.UnBoundedTripleValue>(s, transition.from.name, this.isEqualTerms))
+            path.add(new Step<sparql.UnBoundedTripleValue>(o, transition.to.name, this.isEqualTerms))
           } else {
-            path.add(new Step<sparql.UnBoundedTripleValue>(s, transition.to.name))
-            path.add(new Step<sparql.UnBoundedTripleValue>(o, transition.from.name))
+            path.add(new Step<sparql.UnBoundedTripleValue>(s, transition.to.name, this.isEqualTerms))
+            path.add(new Step<sparql.UnBoundedTripleValue>(o, transition.from.name, this.isEqualTerms))
           }
           return self.evaluatePropertyPath(path, obj, graph, context, automaton, forward)
         }

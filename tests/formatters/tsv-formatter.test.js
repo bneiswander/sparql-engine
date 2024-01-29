@@ -27,7 +27,7 @@ SOFTWARE.
 import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
 import { tsvFormatter } from '../../src/formatters/csv-tsv-formatter'
-import { getGraph, TestEngine } from '../utils'
+import { TestEngine, getGraph } from '../utils'
 
 describe('W3C TSV formatter', () => {
   let engine = null
@@ -47,13 +47,13 @@ describe('W3C TSV formatter', () => {
       ?s dblp-rdf:authorOf ?article .
     }`
     const expected = `name\tarticle
-"Thomas Minier"@en\thttps://dblp.org/rec/conf/esws/MinierMSM17a
-"Thomas Minier"@en\thttps://dblp.org/rec/conf/esws/MinierMSM17
-"Thomas Minier"@en\thttps://dblp.org/rec/journals/corr/abs-1806-00227
-"Thomas Minier"@en\thttps://dblp.org/rec/conf/esws/MinierSMV18
 "Thomas Minier"@en\thttps://dblp.org/rec/conf/esws/MinierSMV18a
+"Thomas Minier"@en\thttps://dblp.org/rec/conf/esws/MinierSMV18
+"Thomas Minier"@en\thttps://dblp.org/rec/journals/corr/abs-1806-00227
+"Thomas Minier"@en\thttps://dblp.org/rec/conf/esws/MinierMSM17
+"Thomas Minier"@en\thttps://dblp.org/rec/conf/esws/MinierMSM17a
 `
-    const results = await engine.execute(query).pipe(tsvFormatter).toArray()
+    const results = (await engine.execute(query).pipe(tsvFormatter).toArray()).join('')
     expect(results).to.equals(expected)
   })
 
@@ -71,7 +71,7 @@ describe('W3C TSV formatter', () => {
     const expected = `boolean
 true
 `
-    const results = await engine.execute(query).pipe(tsvFormatter).toArray()
+    const results = (await engine.execute(query).pipe(tsvFormatter).toArray()).join('')
     expect(results).to.equals(expected)
   })
 })

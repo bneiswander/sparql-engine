@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 
 describe('SPARQL VALUES', () => {

@@ -25,7 +25,7 @@ SOFTWARE.
 'use strict'
 
 import { beforeAll, describe, expect, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 
 describe('SPARQL MINUS', () => {
@@ -43,31 +43,28 @@ describe('SPARQL MINUS', () => {
       ?s ?p ?o .
       MINUS { ?s rdf:type dblp-rdf:Person . }
     }`
-    let nbResults = 0
-    const iterator = engine.execute(query)
-    iterator.subscribe(b => {
+    const results = await engine.execute(query).toArray()
+    results.forEach(b => {
       b = b.toObject()
       expect(b).to.have.keys('?s', '?p', '?o')
       expect(b['?s']).to.be.oneOf([
         'https://dblp.uni-trier.de/pers/m/Minier:Thomas',
         'https://dblp.org/pers/m/Minier:Thomas.nt'
       ])
-      nbResults++
     })
-    expect(nbResults).to.equal(6)
-
+    expect(results).toHaveLength(6)
   })
-})
 
-it('should evaluate SPARQL queries with MINUS clauses that found nothing', async () => {
-  const query = `
+  it('should evaluate SPARQL queries with MINUS clauses that found nothing', async () => {
+    const query = `
     PREFIX dblp-rdf: <https://dblp.uni-trier.de/rdf/schema-2017-04-18#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     SELECT * WHERE {
       ?s rdf:type dblp-rdf:Person .
       MINUS { ?s dblp-rdf:primaryFullPersonName ?name }
     }`
-  const results = await engine.execute(query).toArray()
-  expect(results).toHaveLength(0)
+    const results = await engine.execute(query).toArray()
+    expect(results).toHaveLength(0)
 
+  })
 })

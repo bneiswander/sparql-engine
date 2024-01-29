@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 describe('SPARQL property paths: One or More paths', () => {
     let engine = null
@@ -62,7 +62,7 @@ describe('SPARQL property paths: One or More paths', () => {
                     expect(b['?name']).to.be.oneOf(['http://example.org/Eve'])
                     break;
                 default:
-                    throw new Error('FAIL TEST')
+                    throw new Error(`Unexpected result ${JSON.stringify(b, null, 2)}`)
             }
 
         })
@@ -95,7 +95,7 @@ describe('SPARQL property paths: One or More paths', () => {
                     expect(b['?name']).to.be.oneOf(['http://example.org/Carol'])
                     break;
                 default:
-                    throw new Error('FAIL TEST')
+                    throw new Error(`Unexpected result ${JSON.stringify(b, null, 2)}`)
             }
 
         })
@@ -130,6 +130,8 @@ describe('SPARQL property paths: One or More paths', () => {
                 case 'http://example.org/Eve':
                     expect(b['?name']).to.be.oneOf(['http://example.org/Bob', 'http://example.org/Carol', 'http://example.org/Didier'])
                     break;
+                default:
+                    throw new Error(`Unexpected result ${JSON.stringify(b, null, 2)}`)
             }
 
         })
@@ -162,7 +164,7 @@ describe('SPARQL property paths: One or More paths', () => {
                     expect(b['?name']).to.be.oneOf(['http://example.org/Carol', 'http://example.org/Didier'])
                     break;
                 default:
-                    throw new Error('FAIL TEST')
+                    throw new Error(`Unexpected result ${JSON.stringify(b, null, 2)}`)
             }
 
         })
@@ -198,6 +200,8 @@ describe('SPARQL property paths: One or More paths', () => {
                 case 'http://example.org/Eve':
                     expect(b['?o']).to.be.oneOf(['http://example.org/Bob', 'http://example.org/Carol', 'http://example.org/Didier'])
                     break;
+                default:
+                    throw new Error(`Unexpected result ${JSON.stringify(b, null, 2)}`)
             }
 
         })

@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 
 describe('Non standard SPARQL aggregates', () => {
@@ -93,13 +93,9 @@ describe('Non standard SPARQL aggregates', () => {
 
   data.forEach(d => {
     it(`should evaluate the "${d.name}" SPARQL aggregate`, async () => {
-      const results = []
-      const iterator = engine.execute(d.query)
-      iterator.subscribe(b => {
-        results.push(b.toObject())
-      })
+      const iterator = await engine.execute(d.query).toArray()
+      const results = iterator.map(b => b.toObject())
       expect(results).to.deep.equals(d.results)
-
     })
   })
 })

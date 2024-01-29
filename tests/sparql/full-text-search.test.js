@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 
 describe('Full Text Search SPARQL queries', () => {
@@ -151,7 +151,7 @@ describe('Full Text Search SPARQL queries', () => {
           '?rank': '"1"^^http://www.w3.org/2001/XMLSchema#integer'
         },
         {
-          '?o': 'https://dblp.org/rec/conf/esws/MinierMSM17a',
+          '?o': 'https://dblp.org/rec/conf/esws/MinierSMV18a',
           '?score': '"0.5"^^http://www.w3.org/2001/XMLSchema#float',
           '?rank': '"2"^^http://www.w3.org/2001/XMLSchema#integer'
         }
@@ -176,7 +176,7 @@ describe('Full Text Search SPARQL queries', () => {
           '?rank': '"1"^^http://www.w3.org/2001/XMLSchema#integer'
         },
         {
-          '?o': 'https://dblp.org/rec/conf/esws/MinierMSM17a',
+          '?o': 'https://dblp.org/rec/conf/esws/MinierSMV18a',
           '?score': '"0.5"^^http://www.w3.org/2001/XMLSchema#float',
           '?rank': '"2"^^http://www.w3.org/2001/XMLSchema#integer'
         }

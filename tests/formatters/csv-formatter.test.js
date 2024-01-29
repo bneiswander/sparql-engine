@@ -27,7 +27,7 @@ SOFTWARE.
 import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
 import { csvFormatter } from '../../src/formatters/csv-tsv-formatter'
-import { getGraph, TestEngine } from '../utils'
+import { TestEngine, getGraph } from '../utils'
 
 describe('W3C CSV formatter', async () => {
   let engine = null
@@ -48,13 +48,13 @@ describe('W3C CSV formatter', async () => {
     }`
 
     const expected = `name,article
-"Thomas Minier"@en,https://dblp.org/rec/conf/esws/MinierMSM17a
-"Thomas Minier"@en,https://dblp.org/rec/conf/esws/MinierMSM17
-"Thomas Minier"@en,https://dblp.org/rec/journals/corr/abs-1806-00227
-"Thomas Minier"@en,https://dblp.org/rec/conf/esws/MinierSMV18
 "Thomas Minier"@en,https://dblp.org/rec/conf/esws/MinierSMV18a
+"Thomas Minier"@en,https://dblp.org/rec/conf/esws/MinierSMV18
+"Thomas Minier"@en,https://dblp.org/rec/journals/corr/abs-1806-00227
+"Thomas Minier"@en,https://dblp.org/rec/conf/esws/MinierMSM17
+"Thomas Minier"@en,https://dblp.org/rec/conf/esws/MinierMSM17a
 `
-    const results = (await engine.execute(query).pipe(csvFormatter).toArray()).join()
+    const results = (await engine.execute(query).pipe(csvFormatter).toArray()).join('')
     expect(results).to.equals(expected)
   })
 
@@ -68,7 +68,7 @@ describe('W3C CSV formatter', async () => {
       ?s dblp-rdf:primaryFullPersonName ?name .
       ?s dblp-rdf:authorOf ?article .
     }`
-    const results = (await engine.execute(query).pipe(csvFormatter).toArray()).join()
+    const results = (await engine.execute(query).pipe(csvFormatter).toArray()).join('')
     const expected = `boolean
 true
 `

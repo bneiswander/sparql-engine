@@ -35,7 +35,7 @@ import Graph from './graph.js'
  */
 export default class HashMapDataset extends Dataset {
   private _defaultGraph: Graph
-  private readonly _namedGraphs: Map<rdf.NamedNode, Graph>
+  private readonly _namedGraphs: Map<string, Graph>
   /**
    * Constructor
    * @param defaultGraphIRI - IRI of the Default Graph
@@ -49,7 +49,7 @@ export default class HashMapDataset extends Dataset {
   }
 
   get iris(): rdf.NamedNode[] {
-    return Array.from(this._namedGraphs.keys())
+    return Array.from(this._namedGraphs.keys()).map(rdf.createIRI)
   }
 
   setDefaultGraph(g: Graph): void {
@@ -62,25 +62,25 @@ export default class HashMapDataset extends Dataset {
 
   addNamedGraph(iri: rdf.NamedNode, g: Graph): void {
     g.iri = iri
-    this._namedGraphs.set(iri, g)
+    this._namedGraphs.set(iri.value, g)
   }
 
   getNamedGraph(iri: rdf.NamedNode): Graph {
     if (this._defaultGraph.iri.equals(iri)) {
       return this.getDefaultGraph()
-    } else if (!this._namedGraphs.has(iri)) {
-      throw new Error(`Unknown graph with iri ${iri}`)
+    } else if (!this._namedGraphs.has(iri.value)) {
+      throw new Error(`Unknown graph with iri ${iri.value}`)
     }
-    return this._namedGraphs.get(iri)!
+    return this._namedGraphs.get(iri.value)!
   }
 
   hasNamedGraph(iri: rdf.NamedNode): boolean {
-    return this._namedGraphs.has(iri)
+    return this._namedGraphs.has(iri.value)
   }
 
   deleteNamedGraph(iri: rdf.NamedNode): void {
-    if (this._namedGraphs.has(iri)) {
-      this._namedGraphs.delete(iri)
+    if (this._namedGraphs.has(iri.value)) {
+      this._namedGraphs.delete(iri.value)
     } else {
       throw new Error(`Cannot delete unknown graph with iri ${iri}`)
     }

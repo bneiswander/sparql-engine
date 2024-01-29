@@ -122,7 +122,7 @@ export default class BGPStageBuilder extends StageBuilder {
         if (graph) {
           let iterator = this._buildIterator(engine.from([value]), graph, bgp, context)
           if (artificals.length > 0) {
-            iterator = engine.map(iterator, (b: Bindings) => b.filter(variable => artificals.indexOf(variable) < 0))
+            iterator = engine.map(iterator, (b: Bindings) => b.filter(variable => artificals.map(v => v.value).indexOf(variable.value) < 0))
           }
           return iterator
         }
@@ -143,7 +143,7 @@ export default class BGPStageBuilder extends StageBuilder {
 
     // remove artificials variables from bindings
     if (artificals.length > 0) {
-      iterator = Pipeline.getInstance().map(iterator, (b: Bindings) => b.filter(variable => artificals.indexOf(variable) < 0))
+      iterator = Pipeline.getInstance().map(iterator, (b: Bindings) => b.filter(variable => artificals.map(v => v.value).indexOf(variable.value) < 0))
     }
     return iterator
   }
@@ -154,6 +154,7 @@ export default class BGPStageBuilder extends StageBuilder {
    * @return A Tuple [Rewritten BGP, List of SPARQL variable added]
    */
   _replaceBlankNodes(patterns: SPARQL.Triple[]): [SPARQL.Triple[], rdf.Variable[]] {
+    // FIXME Change to TermSet
     const newVariables: rdf.Variable[] = []
     function rewrite<T extends rdf.Term | SPARQL.PropertyPath>(term: T): T | rdf.Variable {
       if (rdf.isBlankNode(term)) {

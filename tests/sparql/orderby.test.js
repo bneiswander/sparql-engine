@@ -25,7 +25,7 @@ SOFTWARE.
 'use strict'
 
 import { beforeAll, describe, expect, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 
 describe('ORDER BY queries', () => {
@@ -54,8 +54,8 @@ describe('ORDER BY queries', () => {
       'https://dblp.org/rec/journals/corr/abs-1806-00227'
     ]
 
-    const iterator = engine.execute(query)
-    iterator.subscribe(b => {
+    const actual = await engine.execute(query).toArray()
+    actual.forEach(b => {
       b = b.toObject()
       expect(b['?article']).to.equal(results[0])
       results.shift()
@@ -82,8 +82,8 @@ describe('ORDER BY queries', () => {
       'https://dblp.org/rec/conf/esws/MinierMSM17'
     ]
 
-    const iterator = engine.execute(query)
-    iterator.subscribe(b => {
+    const iterator = await engine.execute(query).toArray()
+    iterator.forEach(b => {
       b = b.toObject()
       expect(b['?article']).to.equal(results[0])
       results.shift()
@@ -110,8 +110,8 @@ describe('ORDER BY queries', () => {
       'https://dblp.org/rec/conf/esws/MinierMSM17'
     ]
 
-    const iterator = engine.execute(query)
-    iterator.subscribe(b => {
+    const iterator = await engine.execute(query).toArray()
+    iterator.forEach(b => {
       b = b.toObject()
       expect(b['?article']).to.equal(results[0])
       results.shift()

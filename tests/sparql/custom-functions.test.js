@@ -26,8 +26,8 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { describe, it } from 'vitest'
-import { rdf } from '../../src/api.js'
-import { getGraph, TestEngine } from '../utils.js'
+import { rdf } from '../../src/api'
+import { TestEngine, getGraph } from '../utils'
 
 describe('SPARQL custom operators', () => {
 
@@ -172,5 +172,4 @@ describe('SPARQL custom operators', () => {
     expect(() => engine.execute(query)).to.throw(Error)
 
   })
-
 })

@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { TestEngine, getGraph } from '../utils.js'
 
 
 describe('SPARQL property paths: alternative paths', () => {
@@ -156,7 +156,7 @@ describe('SPARQL property paths: alternative paths', () => {
         SELECT * WHERE {
             ?s (foaf:knows/:love)|(foaf:knows/:hate) ?o .
         }`
-        const results = await engine.execute().toArray()
+        const results = await engine.execute(query).toArray()
         results.forEach(b => {
             b = b.toObject()
             expect(b).to.have.property('?s')
@@ -192,7 +192,7 @@ describe('SPARQL property paths: alternative paths', () => {
         }`;
 
 
-        const results = await engine.execute().toArray()
+        const results = await engine.execute(query).toArray()
         expect(results.length).to.equal(1);
         expect(results[0]).to.equal(true);
     })

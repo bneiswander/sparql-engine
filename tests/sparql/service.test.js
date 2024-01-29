@@ -24,13 +24,13 @@ SOFTWARE.
 
 'use strict'
 
-import { expect } from 'chai'
-import { beforeEach, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { rdf } from '../../src/utils'
+import { TestEngine, getGraph } from '../utils.js'
 
 
-const GRAPH_A_IRI = 'http://example.org#some-graph-a'
-const GRAPH_B_IRI = 'http://example.org#some-graph-b'
+const GRAPH_A_IRI = rdf.createIRI('http://example.org#some-graph-a')
+const GRAPH_B_IRI = rdf.createIRI('http://example.org#some-graph-b')
 
 describe('SERVICE queries', () => {
   let engine = null
@@ -41,7 +41,7 @@ describe('SERVICE queries', () => {
     gB = getGraph('./tests/data/dblp2.nt')
     engine = new TestEngine(gA, GRAPH_A_IRI)
     engine._dataset.setGraphFactory(iri => {
-      if (iri === GRAPH_B_IRI) {
+      if (iri.equals(GRAPH_B_IRI)) {
         return gB
       }
       return null
@@ -57,7 +57,7 @@ describe('SERVICE queries', () => {
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       SELECT ?name ?article WHERE {
         ?s rdf:type dblp-rdf:Person .
-        SERVICE <${GRAPH_A_IRI}> {
+        SERVICE <${GRAPH_A_IRI.value}> {
           ?s dblp-rdf:primaryFullPersonName ?name .
           ?s dblp-rdf:authorOf ?article .
         }
@@ -83,7 +83,7 @@ describe('SERVICE queries', () => {
       PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       SELECT * WHERE {
         ?s dblp-rdf:coCreatorWith ?coCreator .
-        SERVICE <${GRAPH_B_IRI}> {
+        SERVICE <${GRAPH_B_IRI.value}> {
           ?s2 dblp-rdf:coCreatorWith ?coCreator .
           ?s2 dblp-rdf:primaryFullPersonName ?name .
         }
@@ -106,13 +106,12 @@ describe('SERVICE queries', () => {
   data.forEach(d => {
     it(d.text, async () => {
       let nbResults = 0
-      const iterator = engine.execute(d.query)
-      iterator.subscribe(b => {
+      const iterator = await engine.execute(d.query).toArray()
+      iterator.forEach(b => {
         b = b.toObject()
         d.testFun(b)
-        nbResults++
       })
-      expect(nbResults).to.equal(d.nbResults)
+      expect(iterator).toHaveLength(d.nbResults)
     })
   })
 })

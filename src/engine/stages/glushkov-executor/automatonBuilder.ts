@@ -59,6 +59,12 @@ export function union(setA: Set<number>, setB: Set<number>): Set<number> {
  * @author Julien Aimonier-Davat
  */
 export class GlushkovBuilder implements AutomatonBuilder<number, rdf.Term> {
+  private static predicateTest = (predicates: Array<rdf.Term>, value: rdf.Term): boolean => {
+    return predicates.some((predicate: rdf.Term) => {
+      return predicate.equals(value)
+    })
+  }
+
   private syntaxTree: any
   private nullable: Map<number, boolean>
   private first: Map<number, Set<number>>
@@ -388,7 +394,7 @@ export class GlushkovBuilder implements AutomatonBuilder<number, rdf.Term> {
       let reverse = this.reverse.get(value) as boolean
       let negation = this.negation.get(value) as boolean
       let predicates = this.predicates.get(value) as Array<rdf.Term>
-      let transition = new Transition(initialState, toState, reverse, negation, predicates)
+      let transition = new Transition(initialState, toState, reverse, negation, predicates, GlushkovBuilder.predicateTest)
       glushkov.addTransition(transition)
     })
 
@@ -401,7 +407,7 @@ export class GlushkovBuilder implements AutomatonBuilder<number, rdf.Term> {
         let reverse = this.reverse.get(to) as boolean
         let negation = this.negation.get(to) as boolean
         let predicates = this.predicates.get(to) as Array<rdf.Term>
-        let transition = new Transition(fromState, toState, reverse, negation, predicates)
+        let transition = new Transition(fromState, toState, reverse, negation, predicates, GlushkovBuilder.predicateTest)
         glushkov.addTransition(transition)
       })
     }

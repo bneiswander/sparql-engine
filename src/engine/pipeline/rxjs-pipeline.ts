@@ -24,7 +24,7 @@ SOFTWARE.
 
 'use strict'
 
-import { concat, EMPTY, from, Observable, of, Subscriber } from 'rxjs'
+import { concat, EMPTY, from, Observable, of, Subscriber } from 'rxjs';
 import {
   bufferCount,
   catchError,
@@ -43,8 +43,8 @@ import {
   take,
   tap,
   toArray
-} from 'rxjs/operators'
-import { PipelineEngine, StreamPipelineInput } from './pipeline-engine.js'
+} from 'rxjs/operators';
+import { PipelineEngine, StreamPipelineInput } from './pipeline-engine.js';
 
 // Declare a module with the same name as the imported module
 declare module 'rxjs' {
@@ -164,7 +164,7 @@ export default class RxjsPipeline extends PipelineEngine {
     return input.pipe(skip(toSkip))
   }
 
-  distinct<T, K>(input: Observable<T>, selector?: (value: T) => T | K): Observable<T> {
+  distinct<T, K = T>(input: Observable<T>, selector?: (value: T) => K): Observable<T> {
     return input.pipe(distinct(selector))
   }
 

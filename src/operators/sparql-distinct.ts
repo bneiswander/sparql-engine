@@ -37,7 +37,7 @@ import { rdf } from '../utils.js'
  */
 function _hash(bindings: Bindings): string {
   const items: string[] = []
-  bindings.forEach((k: rdf.Variable, v: Binding) => items.push(`${k}=${encodeURIComponent(v.value)}`))
+  bindings.forEach((k: rdf.Variable, v: Binding) => items.push(`${k.value}=${encodeURIComponent(rdf.toN3(v))}`))
   items.sort()
   return items.join('&')
 }

@@ -24,11 +24,9 @@ SOFTWARE.
 
 'use strict'
 
-import { expect } from 'chai'
-import { beforeAll, describe, it } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
 import jsonFormatter from '../../src/formatters/json-formatter'
-import { getGraph, TestEngine } from '../utils.js'
-import expected from './select.json'
+import { TestEngine, getGraph } from '../utils.js'
 
 describe('W3C JSON formatter', () => {
   let engine = null
@@ -48,8 +46,9 @@ describe('W3C JSON formatter', () => {
       ?s dblp-rdf:authorOf ?article .
     }`
 
-    const results = await jsonFormatter(engine.execute(query)).toArray()
-    expect(results).to.equals(expected)
+    const results = await (await jsonFormatter(engine.execute(query)).toArray()).join('')
+    expect(() => JSON.parse(results)).not.toThrow()
+    expect(results).toMatchInlineSnapshot(`"{"head":{"vars": ["name","article"]},"results": {"bindings": [{"name":{"type":"literal","value":"Thomas Minier","xml:lang":"en"},"article":{"type":"uri","value":"https://dblp.org/rec/conf/esws/MinierSMV18a"}},{"name":{"type":"literal","value":"Thomas Minier","xml:lang":"en"},"article":{"type":"uri","value":"https://dblp.org/rec/conf/esws/MinierSMV18"}},{"name":{"type":"literal","value":"Thomas Minier","xml:lang":"en"},"article":{"type":"uri","value":"https://dblp.org/rec/journals/corr/abs-1806-00227"}},{"name":{"type":"literal","value":"Thomas Minier","xml:lang":"en"},"article":{"type":"uri","value":"https://dblp.org/rec/conf/esws/MinierMSM17"}},{"name":{"type":"literal","value":"Thomas Minier","xml:lang":"en"},"article":{"type":"uri","value":"https://dblp.org/rec/conf/esws/MinierMSM17a"}}]}}"`)
   })
 
   it('should evaluate ASK queries', async () => {
@@ -62,7 +61,7 @@ describe('W3C JSON formatter', () => {
       ?s dblp-rdf:primaryFullPersonName ?name .
       ?s dblp-rdf:authorOf ?article .
     }`
-    const results = await jsonFormatter(engine.execute(query)).toArray()
+    const results = (await jsonFormatter(engine.execute(query)).toArray()).join('')
     const json = JSON.parse(results)
     expect(json).to.deep.equals({
       boolean: true

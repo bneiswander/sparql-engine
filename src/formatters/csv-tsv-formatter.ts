@@ -40,10 +40,8 @@ import { rdf } from '../utils.js'
  */
 function writeHead(bindings: Bindings, separator: string, input: StreamPipelineInput<string>): rdf.Variable[] {
   const variables = Array.from(bindings.variables())
-  const header = variables
-    .map(v => v.value)
-    .map(v => v.startsWith('?') ? v.substring(1) : v)
-  input.next(variables.join(separator))
+  const header = variables.map(v => v.value).join(separator)
+  input.next(header)
   input.next('\n')
   return variables
 }

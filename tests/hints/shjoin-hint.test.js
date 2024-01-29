@@ -26,7 +26,7 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils'
+import { TestEngine, getGraph } from '../utils'
 
 describe('SELECT SPARQL queries', () => {
   let engine = null
@@ -50,7 +50,7 @@ describe('SELECT SPARQL queries', () => {
 
     const results = await engine.execute(query).toArray()
     results.forEach(b => {
-      expect(b).to.have.keys('?name', '?article')
+      expect(b.toObject()).to.have.keys('?name', '?article')
     })
     expect(results.length).to.equal(5)
   })

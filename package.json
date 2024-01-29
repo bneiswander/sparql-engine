@@ -9,7 +9,7 @@
     "lint": "tslint -c ./tslint.json --fix src/*.ts src/**/*.ts",
     "build": "tsc",
     "pretest": "npm run build",
-    "test": "mocha tests/**/*-test.mjs",
+    "test": "vitest --run",
     "doc": "typedoc --mode file --out docs/"
   },
   "repository": {

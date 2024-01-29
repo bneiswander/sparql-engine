@@ -26,7 +26,8 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { rdf } from '../../src/utils'
+import { TestEngine, getGraph } from '../utils'
 
 
 describe('Semantic caching for SPARQL queries', () => {
@@ -46,13 +47,12 @@ describe('Semantic caching for SPARQL queries', () => {
     results.forEach(b => {
       b = b.toObject()
       expect(b).to.have.keys('?s', '?p', '?o')
-
     })
     // we have all results in double
     expect(results.length).to.equal(34)
     // check for cache hits
     const bgp = {
-      patterns: [{ subject: '?s', predicate: '?p', object: '?o' }],
+      patterns: [{ subject: rdf.createVariable('?s'), predicate: rdf.createVariable('?p'), object: rdf.createVariable('?o') }],
       graphIRI: engine.defaultGraphIRI()
     }
     const cache = engine._builder._currentCache
@@ -64,7 +64,6 @@ describe('Semantic caching for SPARQL queries', () => {
 
     })
   })
-
 
   it('should not cache BGPs when the query has a LIMIT modifier', async () => {
     const query = `

@@ -41,7 +41,7 @@ import { rdf } from '../../utils.js'
  */
 export default function select(source: PipelineStage<Bindings>, query: SPARQL.SelectQuery) {
   const variables = query.variables
-  const selectAll = variables.length === 1 && (variables[0] as SPARQL.Wildcard).value === '*'
+  const selectAll = variables.length === 1 && rdf.isWildcard(variables[0] as SPARQL.Wildcard)
   return Pipeline.getInstance().map(source, (bindings: Bindings) => {
     if (!selectAll) {
       bindings = (variables as rdf.Variable[]).reduce((obj, v) => {

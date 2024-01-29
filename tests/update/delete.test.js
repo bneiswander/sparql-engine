@@ -26,10 +26,11 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeEach, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { rdf } from '../../src/utils'
+import { TestEngine, getGraph } from '../utils.js'
 
 
-const GRAPH_IRI = 'htpp://example.org#some-graph'
+const GRAPH_IRI = rdf.createIRI('htpp://example.org#some-graph')
 
 describe('SPARQL UPDATE: DELETE DATA queries', () => {
   let engine = null
@@ -46,32 +47,7 @@ describe('SPARQL UPDATE: DELETE DATA queries', () => {
       <https://dblp.org/pers/m/Minier:Thomas> <https://dblp.uni-trier.de/rdf/schema-2017-04-18#authorOf> <https://dblp.org/rec/conf/esws/MinierSMV18a>
     }`
 
-    engine._graph._store.addTriple(
-      'https://dblp.org/pers/m/Minier:Thomas',
-      'https://dblp.uni-trier.de/rdf/schema-2017-04-18#authorOf',
-      'https://dblp.org/rec/conf/esws/MinierSMV18a')
-
-    engine.execute(query)
-      .execute()
-      .then(() => {
-        const triples = engine._graph._store.getTriples(
-          'https://dblp.org/pers/m/Minier:Thomas',
-          'https://dblp.uni-trier.de/rdf/schema-2017-04-18#authorOf',
-          'https://dblp.org/rec/conf/esws/MinierSMV18a')
-        expect(triples.length).to.equal(0)
-
-      })
-      .catch(done)
-  })
-
-  it('should evaluate DELETE DATA queries using a named Graph', async () => {
-    const query = `
-    DELETE DATA {
-      GRAPH <${GRAPH_IRI}> {
-        <https://dblp.org/pers/m/Minier:Thomas> <https://dblp.uni-trier.de/rdf/schema-2017-04-18#authorOf> <https://dblp.org/rec/conf/esws/MinierSMV18a>
-      }
-    }`
-    engine.getNamedGraph(GRAPH_IRI)._store.addTriple(
+    engine._graph._store.addQuad(
       'https://dblp.org/pers/m/Minier:Thomas',
       'https://dblp.uni-trier.de/rdf/schema-2017-04-18#authorOf',
       'https://dblp.org/rec/conf/esws/MinierSMV18a')
@@ -79,7 +55,32 @@ describe('SPARQL UPDATE: DELETE DATA queries', () => {
     await engine.execute(query)
       .execute()
       .then(() => {
-        const triples = engine.getNamedGraph(GRAPH_IRI)._store.getTriples(
+        const triples = engine._graph._store.getQuads(
+          'https://dblp.org/pers/m/Minier:Thomas',
+          'https://dblp.uni-trier.de/rdf/schema-2017-04-18#authorOf',
+          'https://dblp.org/rec/conf/esws/MinierSMV18a')
+        expect(triples.length).to.equal(0)
+
+      })
+
+  })
+
+  it('should evaluate DELETE DATA queries using a named Graph', async () => {
+    const query = `
+    DELETE DATA {
+      GRAPH <${GRAPH_IRI.value}> {
+        <https://dblp.org/pers/m/Minier:Thomas> <https://dblp.uni-trier.de/rdf/schema-2017-04-18#authorOf> <https://dblp.org/rec/conf/esws/MinierSMV18a>
+      }
+    }`
+    engine.getNamedGraph(GRAPH_IRI)._store.addQuad(
+      'https://dblp.org/pers/m/Minier:Thomas',
+      'https://dblp.uni-trier.de/rdf/schema-2017-04-18#authorOf',
+      'https://dblp.org/rec/conf/esws/MinierSMV18a')
+
+    await engine.execute(query)
+      .execute()
+      .then(() => {
+        const triples = engine.getNamedGraph(GRAPH_IRI)._store.getQuads(
           'https://dblp.org/pers/m/Minier:Thomas',
           'https://dblp.uni-trier.de/rdf/schema-2017-04-18#authorOf',
           'https://dblp.org/rec/conf/esws/MinierSMV18a')

@@ -24,10 +24,9 @@ SOFTWARE.
 
 'use strict'
 
-import { expect } from 'chai'
 import { from } from 'rxjs'
-import { describe, it } from 'vitest'
-import { BindingBase } from '../../src/api'
+import { describe, expect, it } from 'vitest'
+import { BindingBase, rdf } from '../../src/api'
 import bind from '../../src/operators/bind'
 
 describe('Bind operator', () => {
@@ -40,15 +39,17 @@ describe('Bind operator', () => {
     const expr = {
       type: 'operation',
       operator: '+',
-      args: ['?x', '?y']
+      args: [rdf.createVariable('?x'), rdf.createVariable('?y')]
     }
-    const results = await bind(source, '?z', expr).toArray()
+    const results = await bind(source, rdf.createVariable('?z'), expr).toArray()
     results.forEach(value => {
       expect(value.toObject()).to.have.all.keys('?x', '?y', '?z')
-      if (value.get('?x').startsWith('"1"')) {
-        expect(value.get('?z')).to.equal('"3"^^http://www.w3.org/2001/XMLSchema#integer')
+      if (value.getVariable('?x').value.startsWith('1')) {
+        expect(value.getVariable('?z').value).to.equal("3")
+        expect(value.getVariable('?z').datatype.value).to.equal('http://www.w3.org/2001/XMLSchema#integer')
       } else {
-        expect(value.get('?z')).to.equal('"5"^^http://www.w3.org/2001/XMLSchema#integer')
+        expect(value.getVariable('?z').value).to.equal("5")
+        expect(value.getVariable('?z').datatype.value).to.equal('http://www.w3.org/2001/XMLSchema#integer')
       }
     })
     expect(results).toHaveLength(2)

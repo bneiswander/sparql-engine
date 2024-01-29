@@ -39,15 +39,15 @@ import { rdf } from '../../utils.js'
 export default {
   'count': function (variable: rdf.Variable, rows: BindingGroup): rdf.Term {
     let count: number = 0
-    if (rows.has(variable)) {
-      count = rows.get(variable)!.map((v: rdf.Term) => v !== null).length
+    if (rows.has(variable.value)) {
+      count = rows.get(variable.value)!.map((v: rdf.Term) => v !== null).length
     }
     return rdf.createInteger(count)
   },
   'sum': function (variable: rdf.Variable, rows: BindingGroup): rdf.Term {
     let sum = 0
-    if (rows.has(variable)) {
-      sum = rows.get(variable)!.reduce((acc: number, b: rdf.Term) => {
+    if (rows.has(variable.value)) {
+      sum = rows.get(variable.value)!.reduce((acc: number, b: rdf.Term) => {
         if (rdf.isLiteral(b) && rdf.literalIsNumeric(b)) {
           return acc + rdf.asJS(b.value, b.datatype.value)
         }
@@ -59,8 +59,8 @@ export default {
 
   'avg': function (variable: rdf.Variable, rows: BindingGroup): rdf.Term {
     let avg = 0
-    if (rows.has(variable)) {
-      avg = meanBy(rows.get(variable)!, (term: rdf.Term) => {
+    if (rows.has(variable.value)) {
+      avg = meanBy(rows.get(variable.value)!, (term: rdf.Term) => {
         if (rdf.isLiteral(term) && rdf.literalIsNumeric(term)) {
           return rdf.asJS(term.value, term.datatype.value)
         }
@@ -70,7 +70,7 @@ export default {
   },
 
   'min': function (variable: rdf.Variable, rows: BindingGroup): rdf.Term {
-    return minBy(rows.get(variable)!, (v: rdf.Term) => {
+    return minBy(rows.get(variable.value)!, (v: rdf.Term) => {
       if (rdf.isLiteral(v)) {
         return rdf.asJS(v.value, v.datatype.value)
       }
@@ -79,7 +79,7 @@ export default {
   },
 
   'max': function (variable: rdf.Variable, rows: BindingGroup): rdf.Term {
-    return maxBy(rows.get(variable)!, (v: rdf.Term) => {
+    return maxBy(rows.get(variable.value)!, (v: rdf.Term) => {
       if (rdf.isLiteral(v)) {
         return rdf.asJS(v.value, v.datatype.value)
       }
@@ -88,11 +88,11 @@ export default {
   },
 
   'group_concat': function (variable: rdf.Variable, rows: BindingGroup, sep: string): rdf.Term {
-    const value = rows.get(variable)!.map((v: rdf.Term) => v.value).join(sep)
+    const value = rows.get(variable.value)!.map((v: rdf.Term) => v.value).join(sep)
     return rdf.createLiteral(value)
   },
 
   'sample': function (variable: rdf.Variable, rows: BindingGroup): rdf.Term {
-    return sample(rows.get(variable)!)!
+    return sample(rows.get(variable.value)!)!
   }
 }

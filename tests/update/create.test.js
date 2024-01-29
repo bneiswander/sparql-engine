@@ -26,11 +26,12 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeEach, describe, it } from 'vitest'
-import { getGraph, N3Graph, TestEngine } from '../utils.js'
+import { rdf } from '../../src/utils'
+import { N3Graph, TestEngine, getGraph } from '../utils.js'
 
 
-const GRAPH_A_IRI = 'http://example.org#some-graph-a'
-const GRAPH_B_IRI = 'http://example.org#some-graph-b'
+const GRAPH_A_IRI = rdf.createIRI('http://example.org#some-graph-a')
+const GRAPH_B_IRI = rdf.createIRI('http://example.org#some-graph-b')
 
 describe('SPARQL UPDATE: CREATE queries', () => {
   let engine = null
@@ -43,7 +44,7 @@ describe('SPARQL UPDATE: CREATE queries', () => {
   const data = [
     {
       name: 'CREATE GRAPH',
-      query: `CREATE GRAPH <${GRAPH_B_IRI}>`,
+      query: `CREATE GRAPH <${GRAPH_B_IRI.value}>`,
       testFun: () => {
         expect(engine.hasNamedGraph(GRAPH_B_IRI)).to.equal(true)
       }

@@ -26,11 +26,12 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeEach, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { rdf } from '../../src/utils'
+import { TestEngine, getGraph } from '../utils.js'
 
 
-const GRAPH_A_IRI = 'http://example.org#some-graph-a'
-const GRAPH_B_IRI = 'http://example.org#some-graph-b'
+const GRAPH_A_IRI = rdf.createIRI('http://example.org#some-graph-a')
+const GRAPH_B_IRI = rdf.createIRI('http://example.org#some-graph-b')
 
 describe('SPARQL UPDATE: ADD queries', () => {
   let engine = null
@@ -44,17 +45,17 @@ describe('SPARQL UPDATE: ADD queries', () => {
   const data = [
     {
       name: 'ADD DEFAULT to NAMED',
-      query: `ADD DEFAULT TO <${GRAPH_B_IRI}>`,
+      query: `ADD DEFAULT TO <${GRAPH_B_IRI.value}>`,
       testFun: () => {
-        const triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getTriples('https://dblp.org/pers/m/Minier:Thomas')
+        const triples = engine.getNamedGraph(GRAPH_B_IRI)._store.getQuads('https://dblp.org/pers/m/Minier:Thomas')
         expect(triples.length).to.equal(11)
       }
     },
     {
       name: 'ADD NAMED to DEFAULT',
-      query: `ADD <${GRAPH_B_IRI}> TO DEFAULT`,
+      query: `ADD <${GRAPH_B_IRI.value}> TO DEFAULT`,
       testFun: () => {
-        const triples = engine._graph._store.getTriples('https://dblp.org/pers/g/Grall:Arnaud')
+        const triples = engine._graph._store.getQuads('https://dblp.org/pers/g/Grall:Arnaud')
         expect(triples.length).to.equal(10)
       }
     }

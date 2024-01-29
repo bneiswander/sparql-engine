@@ -40,7 +40,7 @@ import StageBuilder from './stage-builder.js'
 export default class FilterStageBuilder extends StageBuilder {
   execute(source: PipelineStage<Bindings>, pattern: SPARQL.FilterPattern, customFunctions: CustomFunctions, context: ExecutionContext): PipelineStage<Bindings> {
     const expression = pattern.expression as SPARQL.OperationExpression
-    if ((expression).type === 'operation') {
+    if (['operation', 'functionCall'].includes(expression.type)) {
       switch (expression.operator) {
         case 'exists':
           return exists(source, expression.args, this.builder!, false, context)

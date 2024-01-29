@@ -24,12 +24,10 @@ SOFTWARE.
 
 'use strict'
 
-import { expect } from 'chai'
 import { from } from 'rxjs'
-import { describe, it } from 'vitest'
-import { BindingBase } from '../../src/api'
+import { describe, expect, it } from 'vitest'
+import { BindingBase, rdf } from '../../src/api'
 import hashJoin from '../../src/operators/join/hash-join'
-import { getIteratorObjects } from '../utils'
 
 describe('Hash Join operator', () => {
   it('should perform a join between two sources of bindings', async () => {
@@ -49,27 +47,26 @@ describe('Hash Join operator', () => {
       BindingBase.fromObject({ '?x': 'http://example.org#tata', '?y': '"5"' })
     ])
 
-    const op = hashJoin(left, right, '?x')
-    const results = await getIteratorObjects(op)
+    const op = hashJoin(left, right, rdf.createVariable('?x'))
+    const results = await op.toArray()
     results.forEach(value => {
       expect(value.toObject()).to.have.all.keys('?x', '?y')
-      switch (value.get('?x')) {
+      switch (value.getVariable('?x').value) {
         case 'http://example.org#toto':
-          expect(value.get('?y')).to.be.oneOf(['"1"', '"2"', '"3"'])
+          expect(value.getVariable('?y').value).to.be.oneOf(['1', '2', '3'])
           nbEach.set('http://example.org#toto', nbEach.get('http://example.org#toto') + 1)
           break
         case 'http://example.org#titi':
-          expect(value.get('?y')).to.be.oneOf(['"4"'])
+          expect(value.getVariable('?y').value).to.be.oneOf(['4'])
           nbEach.set('http://example.org#titi', nbEach.get('http://example.org#titi') + 1)
           break
         default:
           throw new Error(`Unexpected "?x" value: ${value.get('?x')}`)
       }
-      nbResults++
     })
 
-    expect(results.length).to.equal(4)
-    expect(nbEach.get('http://example.org#toto')).to.equal(3)
-    expect(nbEach.get('http://example.org#titi')).to.equal(1)
+    expect(results).toHaveLength(4)
+    expect(nbEach.get('http://example.org#toto')).toBe(3)
+    expect(nbEach.get('http://example.org#titi')).toBe(1)
   })
 })

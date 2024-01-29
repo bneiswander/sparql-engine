@@ -24,10 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { expect } from 'chai'
-import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
-
+import { beforeAll, describe, expect, it } from 'vitest'
+import { TestEngine, getGraph } from '../utils.js'
 
 describe('FILTER SPARQL queries', () => {
   let engine = null
@@ -934,8 +932,7 @@ describe('FILTER SPARQL queries', () => {
   data.forEach(d => {
     it(`should evaluate the "${d.name}" FILTER`, async () => {
       const results = await engine.execute(d.query).toArray()
-      expect(results.length).to.equal(d.expectedNb)
+      expect(results).toHaveLength(d.expectedNb)
     })
   })
 })
-

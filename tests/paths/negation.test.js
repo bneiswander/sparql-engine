@@ -24,9 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { expect } from 'chai'
-import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { beforeAll, describe, expect, it } from 'vitest'
+import { TestEngine, getGraph } from '../utils.js'
 
 describe('SPARQL property paths: Negated property sets', () => {
     let engine = null
@@ -90,7 +89,7 @@ describe('SPARQL property paths: Negated property sets', () => {
 
     data.forEach(d => {
         it(`should not evaluate negated "${d.name}" `, async () => {
-            expect(() => engine.execute(d.query)).toThrow()
+            await expect(() => engine.execute(d.query)).toThrowError()
         })
     })
 
@@ -102,7 +101,7 @@ describe('SPARQL property paths: Negated property sets', () => {
         SELECT * WHERE {
             ?s !foaf:knows ?o .
         }`
-        const results = await engine.execute().toArray()
+        const results = await engine.execute(query).toArray()
         results.forEach(b => {
             b = b.toObject()
             expect(b).to.have.property('?s')

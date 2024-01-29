@@ -111,7 +111,9 @@ export class Transition<T, P> {
     private _to: State<T>,
     private _reverse: boolean,
     private _negation: boolean,
-    private _predicates: Array<P>) { }
+    //FIXME change to termSet
+    private _predicates: Array<P>,
+    private _hasFunction: (current: Array<P>, toTest: P) => boolean) { }
 
   /**
    * Get the State from which the transition starts
@@ -154,7 +156,7 @@ export class Transition<T, P> {
   }
 
   hasPredicate(predicate: P) {
-    return this.predicates.indexOf(predicate) > -1
+    return this._hasFunction(this.predicates, predicate)
   }
 
   /**

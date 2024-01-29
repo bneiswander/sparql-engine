@@ -24,9 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { expect } from 'chai'
-import { beforeAll, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils'
+import { beforeAll, describe, expect, it } from 'vitest'
+import { TestEngine, getGraph } from '../utils'
 
 describe('SPARQL ASK queries', () => {
   let engine = null
@@ -46,7 +45,8 @@ describe('SPARQL ASK queries', () => {
       ?s dblp-rdf:authorOf ?article .
     }`
     const results = await engine.execute(query).toArray()
-    expect(results.length).to.equal(1)
+    expect(results).toHaveLength(1)
+    expect(results[0]).toBe(true)
   })
 
   it('should evaluate ASK queries that evaluates to false', async () => {
@@ -60,8 +60,9 @@ describe('SPARQL ASK queries', () => {
       ?s dblp-rdf:authorOf ?article .
     }`
 
-    const results = engine.execute(query).toArray()
-    expect(results.length).to.equal(1)
+    const results = await engine.execute(query).toArray()
+    expect(results).toHaveLength(1)
+    expect(results[0]).toBe(false)
 
   })
 })

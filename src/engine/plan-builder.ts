@@ -289,7 +289,7 @@ export class PlanBuilder {
 
       // FIXME need to handle Wildcard here
 
-      const parts = partition(query.variables as SPARQL.Variable[], v => rdf.isVariable(v as rdf.Term))
+      const parts = partition(query.variables as SPARQL.Variable[], v => rdf.isVariable(v as rdf.Term) || rdf.isWildcard(v as rdf.Term))
       variableExpressions = parts[1]
       // add expressions variables to projection variables
       query.variables = parts[0].concat(variableExpressions.map(agg => (agg as SPARQL.VariableExpression).variable))

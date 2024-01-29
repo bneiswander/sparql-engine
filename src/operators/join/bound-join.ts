@@ -56,10 +56,10 @@ function rewriteTriple(triple: SPARQL.Triple, key: number): SPARQL.Triple {
     res.subject = rdf.createVariable(`${triple.subject.value}_${key}`)
   }
   if (!(rdf.isPropertyPath(triple.predicate)) && rdf.isVariable(triple.predicate)) {
-    res.predicate = rdf.createVariable(`${triple.predicate}_${key}`)
+    res.predicate = rdf.createVariable(`${triple.predicate.value}_${key}`)
   }
   if (rdf.isVariable(triple.object)) {
-    res.object = rdf.createVariable(`${triple.object}_${key}`)
+    res.object = rdf.createVariable(`${triple.object.value}_${key}`)
   }
   return res
 }

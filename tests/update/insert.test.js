@@ -26,10 +26,11 @@ SOFTWARE.
 
 import { expect } from 'chai'
 import { beforeEach, describe, it } from 'vitest'
-import { getGraph, TestEngine } from '../utils.js'
+import { rdf } from '../../src/utils'
+import { TestEngine, getGraph } from '../utils.js'
 
 
-const GRAPH_IRI = 'htpp://example.org#some-graph'
+const GRAPH_IRI = rdf.createIRI('htpp://example.org#some-graph')
 
 describe('SPARQL UPDATE: INSERT DATA queries', () => {
   let engine = null
@@ -45,24 +46,23 @@ describe('SPARQL UPDATE: INSERT DATA queries', () => {
     PREFIX dc: <http://purl.org/dc/elements/1.1/>
     INSERT DATA { <http://example/book1>  dc:title  "Fundamentals of Compiler Design" }`
 
-    engine.execute(query)
+    await engine.execute(query)
       .execute()
       .then(() => {
-        const triples = engine._graph._store.getTriples('http://example/book1', null, null)
+        const triples = engine._graph._store.getQuads('http://example/book1', null, null)
         expect(triples.length).to.equal(1)
-        expect(triples[0].subject).to.equal('http://example/book1')
-        expect(triples[0].predicate).to.equal('http://purl.org/dc/elements/1.1/title')
-        expect(triples[0].object).to.equal('"Fundamentals of Compiler Design"')
+        expect(triples[0].subject.value).to.equal('http://example/book1')
+        expect(triples[0].predicate.value).to.equal('http://purl.org/dc/elements/1.1/title')
+        expect(triples[0].object.value).to.equal('Fundamentals of Compiler Design')
 
       })
-      .catch(done)
   })
 
   it('should evaluate INSERT DATA queries using a named Graph', async () => {
     const query = `
     PREFIX dc: <http://purl.org/dc/elements/1.1/>
     INSERT DATA {
-      GRAPH <${GRAPH_IRI}> {
+      GRAPH <${GRAPH_IRI.value}> {
         <http://example/book1>  dc:title  "Fundamentals of Compiler Design"
       }
     }`
@@ -70,11 +70,11 @@ describe('SPARQL UPDATE: INSERT DATA queries', () => {
     await engine.execute(query)
       .execute()
       .then(() => {
-        const triples = engine.getNamedGraph(GRAPH_IRI)._store.getTriples('http://example/book1', null, null)
+        const triples = engine.getNamedGraph(GRAPH_IRI)._store.getQuads('http://example/book1', null, null)
         expect(triples.length).to.equal(1)
-        expect(triples[0].subject).to.equal('http://example/book1')
-        expect(triples[0].predicate).to.equal('http://purl.org/dc/elements/1.1/title')
-        expect(triples[0].object).to.equal('"Fundamentals of Compiler Design"')
+        expect(triples[0].subject.value).to.equal('http://example/book1')
+        expect(triples[0].predicate.value).to.equal('http://purl.org/dc/elements/1.1/title')
+        expect(triples[0].object.value).to.equal('Fundamentals of Compiler Design')
 
       })
   })
