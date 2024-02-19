@@ -1,4 +1,4 @@
-name: ✨ TSlint
+name: ✨ Lint
 on:
   push:
     branches: [master]
