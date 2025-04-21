@@ -10,6 +10,7 @@
     "format": "prettier --write .",
     "build": "tsc",
     "pretest": "npm run build",
+    "prepare": "npm run build",
     "test": "vitest --run",
     "doc": "typedoc --mode file --out docs/"
   },
