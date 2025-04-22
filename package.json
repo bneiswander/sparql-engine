@@ -45,7 +45,7 @@
     "@types/lodash": "^4.14.116",
     "@types/lru-cache": "^7.10.9",
     "@types/n3": "^1.16.4",
-    "@types/node": "^20.17.30",
+    "@types/node": "^22.14.1",
     "@types/rdfjs__data-model": "^2.0.7",
     "@types/rdfjs__namespace": "^2.0.10",
     "@types/sparqljs": "^3.1.12",
