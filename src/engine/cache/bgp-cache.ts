@@ -25,7 +25,8 @@ SOFTWARE.
 'use strict'
 
 import { BinarySearchTree } from 'binary-search-tree'
-import { differenceWith, findIndex, maxBy } from 'lodash'
+import Lodash from 'lodash'
+const { differenceWith, findIndex, maxBy } = Lodash
 import * as SPARQL from 'sparqljs'
 import { Bindings } from '../../rdf/bindings.js'
 import { rdf, sparql } from '../../utils/index.js'

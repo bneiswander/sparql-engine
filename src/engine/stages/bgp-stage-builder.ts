@@ -24,9 +24,9 @@ SOFTWARE.
 
 'use strict'
 
-import { isInteger, isNaN, isNull } from 'lodash'
+import Lodash from 'lodash'
+const { isInteger, isNaN, isNull } = Lodash
 import * as SPARQL from 'sparqljs'
-// import { some } from 'lodash'
 import boundJoin from '../../operators/join/bound-join.js'
 import { BindingBase, Bindings } from '../../rdf/bindings.js'
 import Graph from '../../rdf/graph.js'

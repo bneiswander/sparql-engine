@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { cloneDeep } from 'lodash'
+import Lodash from 'lodash'
+const { cloneDeep } = Lodash
 import * as SPARQL from 'sparqljs'
 
 /**

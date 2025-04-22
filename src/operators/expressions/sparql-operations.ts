@@ -25,7 +25,8 @@ SOFTWARE.
 'use strict'
 
 import crypto from 'crypto'
-import { isNull } from 'lodash'
+import Lodash from 'lodash'
+const { isNull } = Lodash
 import moment, { Moment } from 'moment'
 import { v4 as uuid } from 'uuid'
 import { rdf } from '../../utils/index.js'

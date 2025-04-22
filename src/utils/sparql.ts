@@ -25,7 +25,8 @@ SOFTWARE.
 'use strict'
 
 import * as crypto from 'crypto'
-import { includes, union } from 'lodash'
+import Lodash from 'lodash'
+const { includes, union } = Lodash
 import * as SPARQL from 'sparqljs'
 import * as rdf from './rdf.js'
 

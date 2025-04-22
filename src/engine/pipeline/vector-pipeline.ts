@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { chunk, flatMap, flatten, slice } from 'lodash'
+import Lodash from 'lodash'
+const { chunk, flatMap, flatten, slice } = Lodash
 import {
   PipelineEngine,
   PipelineInput,

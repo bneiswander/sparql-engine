@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { isArray } from 'lodash'
+import Lodash from 'lodash'
+const { isArray } = Lodash
 import * as SPARQL from 'sparqljs'
 import { PipelineStage } from '../engine/pipeline/pipeline-engine.js'
 import { Pipeline } from '../engine/pipeline/pipeline.js'

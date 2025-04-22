@@ -26,7 +26,8 @@ SOFTWARE.
 
 // General libraries
 // utilities
-import { isNull, isUndefined, partition, some, sortBy } from 'lodash'
+import Lodash from 'lodash'
+const { isNull, isUndefined, partition, some, sortBy } = Lodash
 import * as SPARQL from 'sparqljs'
 import { PipelineStage } from '../engine/pipeline/pipeline-engine.js'
 // pipelining engine

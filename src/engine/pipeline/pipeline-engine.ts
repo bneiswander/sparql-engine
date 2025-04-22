@@ -24,7 +24,7 @@ SOFTWARE.
 
 'use strict'
 
-import * as Lodash from 'lodash'
+import Lodash from 'lodash'
 
 const { identity, isUndefined, uniqBy } = Lodash
 

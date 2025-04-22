@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { isBoolean } from 'lodash'
+import Lodash from 'lodash'
+const { isBoolean } = Lodash
 import {
   PipelineStage,
   StreamPipelineInput,

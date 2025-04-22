@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { isBoolean, isNull, isUndefined, map } from 'lodash'
+import Lodash from 'lodash'
+const { isBoolean, isNull, isUndefined, map } = Lodash
 import xml from 'xml'
 import { PipelineStage } from '../engine/pipeline/pipeline-engine.js'
 import { Pipeline } from '../engine/pipeline/pipeline.js'

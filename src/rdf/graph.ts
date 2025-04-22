@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { isNull, mean, orderBy, round, sortBy } from 'lodash'
+import Lodash from 'lodash'
+const { isNull, mean, orderBy, round, sortBy } = Lodash
 import * as SPARQL from 'sparqljs'
 import ExecutionContext from '../engine/context/execution-context.js'
 import {

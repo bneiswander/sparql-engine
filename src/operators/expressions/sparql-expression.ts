@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { isArray, merge, uniqBy } from 'lodash'
+import Lodash from 'lodash'
+const { isArray, merge, uniqBy } = Lodash
 import * as SPARQL from 'sparqljs'
 import { BindingGroup, Bindings } from '../../rdf/bindings.js'
 import { rdf } from '../../utils/index.js'

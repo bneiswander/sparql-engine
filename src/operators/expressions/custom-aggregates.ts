@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { intersectionWith, isUndefined, sum, zip } from 'lodash'
+import Lodash from 'lodash'
+const { intersectionWith, isUndefined, sum, zip } = Lodash
 import { BindingGroup } from '../../rdf/bindings.js'
 import { rdf } from '../../utils/index.js'
 

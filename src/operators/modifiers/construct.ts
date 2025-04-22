@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { compact } from 'lodash'
+import Lodash from 'lodash'
+const { compact } = Lodash
 import * as SPARQL from 'sparqljs'
 import { PipelineStage } from '../../engine/pipeline/pipeline-engine.js'
 import { Pipeline } from '../../engine/pipeline/pipeline.js'

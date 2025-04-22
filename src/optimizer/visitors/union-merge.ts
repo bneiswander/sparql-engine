@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { cloneDeep, partition } from 'lodash'
+import Lodash from 'lodash'
+const { cloneDeep, partition } = Lodash
 import * as SPARQL from 'sparqljs'
 import PlanVisitor from '../plan-visitor.js'
 

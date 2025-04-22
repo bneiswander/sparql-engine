@@ -25,7 +25,8 @@ SOFTWARE.
 'use strict'
 
 import fs from 'fs'
-import { isArray, pick } from 'lodash'
+import Lodash from 'lodash'
+const { isArray, pick } = Lodash
 import { Parser, Store } from 'n3'
 import { Graph, HashMapDataset, Pipeline, PlanBuilder, rdf } from '../src/api'
 

@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { maxBy, meanBy, minBy, sample } from 'lodash'
+import Lodash from 'lodash'
+const { maxBy, meanBy, minBy, sample } = Lodash
 import { BindingGroup } from '../../rdf/bindings.js'
 import { rdf } from '../../utils/index.js'
 

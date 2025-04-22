@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { sortedIndexOf } from 'lodash'
+import Lodash from 'lodash'
+const { sortedIndexOf } = Lodash
 import { PipelineStage } from '../engine/pipeline/pipeline-engine.js'
 import { Pipeline } from '../engine/pipeline/pipeline.js'
 import { BindingGroup, Bindings } from '../rdf/bindings.js'

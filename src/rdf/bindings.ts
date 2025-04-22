@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { isNull, isUndefined } from 'lodash'
+import Lodash from 'lodash'
+const { isNull, isUndefined } = Lodash
 import { Quad_Object, Quad_Predicate, Quad_Subject } from 'n3'
 import * as SPARQL from 'sparqljs'
 import { rdf, sparql } from '../utils/index.js'

@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { mapKeys, pickBy } from 'lodash'
+import Lodash from 'lodash'
+const { mapKeys, pickBy } = Lodash
 import * as SPARQL from 'sparqljs'
 import ExecutionContext from '../../engine/context/execution-context.js'
 import { PipelineStage } from '../../engine/pipeline/pipeline-engine.js'

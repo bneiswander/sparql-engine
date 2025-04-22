@@ -24,7 +24,8 @@ SOFTWARE.
 
 'use strict'
 
-import { partition } from 'lodash'
+import Lodash from 'lodash'
+const { partition } = Lodash
 import * as SPARQL from 'sparqljs'
 import Dataset from '../../rdf/dataset.js'
 import { rdf, sparql } from '../../utils/index.js'
