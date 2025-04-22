@@ -130,6 +130,7 @@ export function rewriteAdd(
   return {
     updateType: 'insertdelete',
     insert: [buildGroupClause(addQuery.destination, dataset, addQuery.silent)],
+    delete: [],
     where: [buildWhereClause(addQuery.source, dataset, addQuery.silent)],
   }
 }

@@ -192,7 +192,7 @@ export default class UpdateStageBuilder extends StageBuilder {
     if (update.updateType === 'insertdelete') {
       graph =
         'graph' in update
-          ? this._dataset.getNamedGraph(update.graph!.name!)
+          ? this._dataset.getNamedGraph(update.graph!)
           : null
       // evaluate the WHERE clause as a classic SELECT query
       const node: SPARQL.Query = {
