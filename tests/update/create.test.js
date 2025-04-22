@@ -37,7 +37,7 @@ describe('SPARQL UPDATE: CREATE queries', () => {
   beforeEach(() => {
     const gA = getGraph('./tests/data/dblp.nt')
     engine = new TestEngine(gA, GRAPH_A_IRI)
-    engine._dataset.setGraphFactory((iri) => new N3Graph())
+    engine._dataset.setGraphFactory(() => new N3Graph())
   })
 
   const data = [

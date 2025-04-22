@@ -31,7 +31,6 @@ import symHashJoin from '../../src/operators/join/shjoin'
 
 describe('Symmetric Hash Join operator', () => {
   it('should perform a join between two sources of bindings', async () => {
-    let nbResults = 0
     let nbEach = new Map()
     nbEach.set('http://example.org#toto', 0)
     nbEach.set('http://example.org#titi', 0)

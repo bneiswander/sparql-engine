@@ -29,7 +29,7 @@ import { isArray, pick } from 'lodash'
 import { Parser, Store } from 'n3'
 import { Graph, HashMapDataset, Pipeline, PlanBuilder, rdf } from '../src/api'
 
-function getGraph(filePaths, isUnion = false) {
+export function getGraph(filePaths, isUnion = false) {
   let graph
   if (isUnion) {
     graph = new UnionN3Graph()
@@ -60,7 +60,7 @@ function formatTriplePattern(triple) {
   return { subject, predicate, object }
 }
 
-class N3Graph extends Graph {
+export class N3Graph extends Graph {
   constructor() {
     super()
     this._store = new Store()
@@ -127,7 +127,7 @@ class UnionN3Graph extends N3Graph {
   }
 }
 
-class TestEngine {
+export class TestEngine {
   constructor(graph, defaultGraphIRI = null, customOperations = {}) {
     this._graph = graph
     this._defaultGraphIRI =
@@ -152,14 +152,8 @@ class TestEngine {
     return this._dataset.hasNamedGraph(iri)
   }
 
-  execute(query, format = 'raw') {
+  execute(query) {
     let iterator = this._builder.build(query)
     return iterator
   }
-}
-
-module.exports = {
-  getGraph,
-  TestEngine,
-  N3Graph,
 }

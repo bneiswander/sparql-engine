@@ -1,14 +1,14 @@
 'use strict'
 
-const {
+import {
   BindingBase,
   HashMapDataset,
   Graph,
   PlanBuilder,
   Pipeline,
-} = require('sparql-engine')
-const level = require('level')
-const levelgraph = require('levelgraph')
+}  from 'sparql-engine'
+import level from 'level'
+import levelgraph from 'levelgraph'
 
 class LevelRDFGraph extends Graph {
   constructor(db) {

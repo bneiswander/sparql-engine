@@ -97,7 +97,7 @@ export default function bind(
         }
         return Pipeline.getInstance().of(res)
       }
-    } catch (e) {
+    } catch {
       // silence errors
     }
     return Pipeline.getInstance().empty()

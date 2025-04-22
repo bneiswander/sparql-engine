@@ -1,7 +1,8 @@
 'use strict'
 
-const { Parser, Store } = require('n3')
-const { HashMapDataset, Graph, PlanBuilder, terms } = require('../')
+import { Parser, Store } from 'n3'
+import { HashMapDataset, Graph, PlanBuilder, terms } from '../'
+
 
 // Format a triple pattern according to N3 API:
 // SPARQL variables must be replaced by `null` values

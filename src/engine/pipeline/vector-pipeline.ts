@@ -59,7 +59,7 @@ export class VectorStage<T> implements PipelineStage<T> {
       this._content
         .then((c) => {
           c.forEach(onData)
-          onEnd && onEnd()
+          if (onEnd) onEnd()
         })
         .catch(onError)
     } catch (e) {

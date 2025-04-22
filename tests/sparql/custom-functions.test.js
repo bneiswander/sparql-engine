@@ -115,7 +115,7 @@ describe('SPARQL custom operators', () => {
 
   it('should consider the solution "unbound" on an error, but query should continue continue', async () => {
     const customFunctions = {
-      'http://test.com#ERROR': function (a) {
+      'http://test.com#ERROR': function () {
         throw new Error(
           'This should result in an unbould solution, but the query should still evaluate',
         )

@@ -30,7 +30,7 @@ import { describe, expect, it } from 'vitest'
  * Test an implementation of PipelineEngine
  * @param  {PipelineEngine} pipeline - Pipeline engine to test
  */
-function testPipelineEngine(pipeline) {
+export default function testPipelineEngine(pipeline) {
   // empty method
   describe('#empty', async () => {
     it('should create a PipelineStage which emits no items', async () => {
@@ -147,12 +147,12 @@ function testPipelineEngine(pipeline) {
       try {
         await asyncSubscribe(
           out,
-          (x) => {},
+          () => {},
           () => {
             rejected = true
           },
         )
-      } catch (e) {
+      } catch {
         expect(rejected).to.equal(true)
       }
     })
@@ -181,7 +181,7 @@ function testPipelineEngine(pipeline) {
       const source = pipeline.map(pipeline.of(1, 2, 3), () => {
         throw new Error()
       })
-      const out = pipeline.catch(source, (err) => {
+      const out = pipeline.catch(source, () => {
         return pipeline.of(5)
       })
       let cpt = 0
@@ -635,15 +635,13 @@ async function asyncSubscribe(out, onNext, onReject, onResolve) {
         onNext(x)
       },
       (e) => {
-        onReject && onReject(e)
+        if (onReject) onReject(e)
         reject()
       },
       () => {
-        onResolve && onResolve()
+        if (onResolve) onResolve()
         resolve()
       },
     )
   })
 }
-
-module.exports = testPipelineEngine

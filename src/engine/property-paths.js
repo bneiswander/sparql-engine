@@ -24,11 +24,11 @@ SOFTWARE.
 
 'use strict'
 
-const _ = require('lodash')
+import _ from 'lodash'
 
 // rewriting rules for property paths
 
-function transformPath(bgp, group, options) {
+export function transformPath(bgp, group, options) {
   let i = 0
   var queryChange = false
   var ret = [bgp, null, []]
@@ -142,7 +142,7 @@ function pathInv(bgp, pathTP, ind, group, filter, options) {
   return [bgp, union, filter]
 }
 
-function pathAlt(bgp, pathTP, ind, group, filter, options) {
+function pathAlt(bgp, pathTP, ind, group, filter) {
   var pathIndex = 0
   for (let i = 0; i < group.triples.length; i++) {
     if (containsPath(group.triples[i].predicate, pathTP)) {
@@ -167,7 +167,7 @@ function pathAlt(bgp, pathTP, ind, group, filter, options) {
   return [bgp, union, filter]
 }
 
-function pathNeg(bgp, pathTP, ind, group, filter, options) {
+function pathNeg(bgp, pathTP, ind, _group, filter, options) {
   var union = null
   let flt = null
   let s = pathTP.subject
@@ -234,8 +234,4 @@ function replPath(tp, path, pred) {
       }
     }
   }
-}
-
-module.exports = {
-  transformPath,
 }

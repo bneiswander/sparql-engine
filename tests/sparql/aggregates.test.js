@@ -133,7 +133,6 @@ describe('SPARQL aggregates', () => {
           break
         default:
           throw new Error(`Unexpected predicate found: ${b['?p']}`)
-          break
       }
     })
     expect(results.length).to.equal(4)

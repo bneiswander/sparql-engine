@@ -239,7 +239,7 @@ export class SPARQLExpression {
           return customFunction(
             ...(args.map((arg) => arg(bindings)) as Parameters<CustomFunction>),
           )
-        } catch (e) {
+        } catch {
           // In section 10 of the sparql docs (https://www.w3.org/TR/sparql11-query/#assignment) it states:
           // "If the evaluation of the expression produces an error, the variable remains unbound for that solution but the query evaluation continues."
           // unfortunately this means the error is silent unless some logging is introduced here,

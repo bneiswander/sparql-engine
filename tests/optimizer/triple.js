@@ -21,39 +21,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+'use strict';
+import { rdf } from '../../src/utils/rdf';
 
-'use strict'
-
-import { rdf } from '../../src/utils'
-
-
-export const query = (...where) => {
-    return { type: 'query', where }
-}
-export const bgp = (...triples) => {
-    return { type: 'bgp', triples }
-}
-export const union = (...patterns) => {
-    return { type: 'union', patterns }
-}
-export const group = (...patterns) => {
-    return { type: 'group', patterns }
-}
-export const optional = (...patterns) => {
-    return { type: 'optional', patterns }
-}
-export const filter = (expression) => {
-    return { type: 'filter', expression }
-}
-export const placeholder = (s) => {
+export const triple = (s, p, o) => {
     return {
-        type: 'bgp',
-        triples: [
-            {
-                subject: rdf.fromN3(s),
-                predicate: rdf.fromN3('http://example.org#foo'),
-                object: rdf.fromN3('"foo"@en'),
-            },
-        ],
-    }
-}
+        subject: rdf.fromN3(s),
+        predicate: rdf.fromN3(p),
+        object: rdf.fromN3(o),
+    };
+};
