@@ -53,7 +53,7 @@ function formatPattern(pattern) {
 describe('LRUBGPCache', () => {
   let cache = null
   beforeEach(() => {
-    cache = new LRUBGPCache(0, Infinity)
+    cache = new LRUBGPCache(100, 100)
   })
 
   describe('#update/commit', () => {

@@ -31,7 +31,7 @@ import { AsyncLRUCache } from '../../src/engine/cache/cache-base'
 describe('AsyncLRUCache', async () => {
   let cache = null
   beforeEach(() => {
-    cache = new AsyncLRUCache(Infinity, Infinity)
+    cache = new AsyncLRUCache(100, 100, item => item.content.length)
   })
 
   describe('#update/commit', async () => {

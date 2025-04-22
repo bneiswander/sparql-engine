@@ -24,15 +24,16 @@ SOFTWARE.
 
 'use strict'
 
-import LRU from 'lru-cache'
+import * as LRU from 'lru-cache'
 import { AsyncCache, Cache } from './cache-interfaces.js'
 
 /**
  * An in-memory LRU cache
  * @author Thomas Minier
  */
-export class BaseLRUCache<K, T> implements Cache<K, T> {
-  private readonly _content: LRU<K, T>
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export class BaseLRUCache<K extends {}, T extends {}> implements Cache<K, T> {
+  private readonly _content: LRU.LRUCache<K, T>
 
   /**
    * Constructor
@@ -47,11 +48,11 @@ export class BaseLRUCache<K, T> implements Cache<K, T> {
     length?: (item: T) => number,
     onDispose?: (key: K, item: T) => void,
   ) {
-    const options = {
-      max: maxSize,
-      maxAge,
-      length,
-      dispose: onDispose,
+    const options: LRU.LRUCache.Options<K,T, unknown> = {
+      maxSize,
+      ttl: maxAge,
+      sizeCalculation: length,
+      dispose: onDispose ? ((i, k) => onDispose(k, i)) : undefined,
       noDisposeOnSet: false,
     }
     // if we set a dispose function, we need to turn 'noDisposeOnSet' to True,
@@ -60,7 +61,7 @@ export class BaseLRUCache<K, T> implements Cache<K, T> {
     if (onDispose !== undefined) {
       options.noDisposeOnSet = true
     }
-    this._content = new LRU<K, T>(options)
+    this._content = new LRU.LRUCache<K, T>(options)
   }
 
   put(key: K, item: T): void {
@@ -79,11 +80,11 @@ export class BaseLRUCache<K, T> implements Cache<K, T> {
   }
 
   delete(key: K): void {
-    this._content.del(key)
+    this._content.delete(key)
   }
 
   count(): number {
-    return this._content.itemCount
+    return this._content.size
   }
 }
 
@@ -186,7 +187,8 @@ export abstract class BaseAsyncCache<K, T, I> implements AsyncCache<K, T, I> {
  * An in-memory LRU implementation of an asynchronous cache.
  * @author Thomas Minier
  */
-export class AsyncLRUCache<K, T, I> extends BaseAsyncCache<K, T, I> {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export class AsyncLRUCache<K extends {}, T, I> extends BaseAsyncCache<K, T, I> {
   /**
    * Constructor
    * @param maxSize - The maximum size of the cache
