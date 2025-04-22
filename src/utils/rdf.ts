@@ -26,7 +26,8 @@ SOFTWARE.
 
 import DataFactory from '@rdfjs/data-model'
 import * as RDF from '@rdfjs/types'
-import { ISO_8601, Moment, parseZone } from 'moment'
+import Moment from 'moment';
+const { ISO_8601, parseZone } = Moment
 import { stringToTerm, termToString } from 'rdf-string'
 import * as SPARQL from 'sparqljs'
 import { XSD } from './namespace.js'
@@ -266,7 +267,7 @@ export function createFalse(): Literal {
  * @param date - Date, in Moment.js format
  * @return A new date literal in RDFJS format
  */
-export function createDate(date: Moment): Literal {
+export function createDate(date: Moment.Moment): Literal {
   return createTypedLiteral(date.toISOString(), XSD.dateTime)
 }
 
@@ -431,8 +432,8 @@ export function literalIsBoolean(literal: Literal): boolean {
 export function termEquals(a: Term, b: Term): boolean {
   if (isLiteral(a) && isLiteral(b)) {
     if (literalIsDate(a) && literalIsDate(b)) {
-      const valueA: Moment = asJS(a.value, a.datatype.value)
-      const valueB: Moment = asJS(b.value, b.datatype.value)
+      const valueA: Moment.Moment = asJS(a.value, a.datatype.value)
+      const valueB: Moment.Moment = asJS(b.value, b.datatype.value)
       // use Moment.js isSame function to compare two dates
       return valueA.isSame(valueB)
     }
