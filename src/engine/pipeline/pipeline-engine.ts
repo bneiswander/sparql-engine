@@ -24,7 +24,9 @@ SOFTWARE.
 
 'use strict'
 
-import { identity, isUndefined, uniqBy } from 'lodash'
+import * as Lodash from 'lodash'
+
+const { identity, isUndefined, uniqBy } = Lodash
 
 /**
  * The input of a {@link PipelineStage}, either another {@link PipelineStage}, an array, an iterable or a promise.
