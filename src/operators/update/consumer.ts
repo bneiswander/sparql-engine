@@ -86,7 +86,7 @@ export abstract class Consumer extends Writable implements Consumable {
         },
         reject,
         () => {
-          this.end(null, '', resolve)
+          this.end(null, resolve)
         },
       )
     })
